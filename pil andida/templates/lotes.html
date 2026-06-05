@@ -1,83 +1,186 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Lotes de Producción - PIL Andina</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
-</head>
-<body>
-    <div id="dashboard-layout">
-        <aside id="sidebar">...</aside> <!-- mismo sidebar -->
-        <main id="main-content">
-            <h2>📦 Control de Lotes de Producción</h2>
-            <hr>
+{% extends "base.html" %}
 
-            <section class="form-section">
-                <h3>Registrar Nuevo Lote de Producción</h3>
-                <form action="/lotes/guardar" method="POST">
-                    <!-- todos los campos del formulario (idénticos a tu original) -->
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Número de Lote:</label>
-                            <input type="text" name="nro_lote" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Producto:</label>
-                            <select name="producto_id">
-                                {% for p in productos %}
-                                <option value="{{ p.id }}">{{ p.nombre_comercial }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Fecha Producción:</label>
-                            <input type="date" name="fecha_produccion" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Fecha Vencimiento:</label>
-                            <input type="date" name="fecha_vencimiento" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Cantidad Producida:</label>
-                            <input type="number" name="cantidad" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Planta de Origen:</label>
-                            <select name="planta_origen">
-                                <option value="La Paz">La Paz</option>
-                                <option value="Cochabamba">Cochabamba</option>
-                                <option value="Santa Cruz">Santa Cruz</option>
-                            </select>
-                        </div>
-                    </div>
-                    <fieldset class="calidad-box">
-                        <legend>Control de Calidad</legend>
-                        <div class="form-group">
-                            <label>Resultado:</label>
-                            <select name="calidad_resultado">
-                                <option value="Aprobado">Aprobado</option>
-                                <option value="Rechazado">Rechazado</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Técnico:</label>
-                            <input type="text" name="tecnico">
-                        </div>
-                        <div class="form-group">
-                            <label>Observaciones:</label>
-                            <textarea name="observaciones"></textarea>
-                        </div>
-                    </fieldset>
-                    <button type="submit" class="btn-success">Guardar Lote</button>
-                </form>
-            </section>
+{% block title %}Gestión de Lotes de Producción - PIL Andina{% endblock %}
 
-            <section class="table-section">
+{% block content %}
+    <div class="breadcrumb">
+        <span></span>
+        <span><a href="/dashboard">Dashboard</a></span>
+        <span>/</span>
+        <span style="color: var(--text-muted);">Lotes de Producción</span>
+    </div>
+
+    <h2 style="margin-bottom: var(--spacing-2xl);"> Control de Lotes de Producción</h2>
+
+    <!-- SECCIÓN DE REGISTRO -->
+    <div class="content-section">
+        <h3> Registrar Nuevo Lote de Producción</h3>
+        
+        <form action="/lotes/guardar" method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nro_lote">Número de Lote</label>
+                    <input type="text" id="nro_lote" name="nro_lote" required placeholder="Ej: LOT-001-2026">
+                </div>
+                <div class="form-group">
+                    <label for="producto_id">Producto</label>
+                    <select id="producto_id" name="producto_id" required>
+                        <option value="">-- Seleccione producto --</option>
+                        {% for p in productos %}
+                            <option value="{{ p.id }}">{{ p.nombre_comercial }} ({{ p.presentacion }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="fecha_produccion">Fecha de Producción</label>
+                    <input type="date" id="fecha_produccion" name="fecha_produccion" required>
+                </div>
+                <div class="form-group">
+                    <label for="fecha_vencimiento">Fecha de Vencimiento</label>
+                    <input type="date" id="fecha_vencimiento" name="fecha_vencimiento" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cantidad">Cantidad Producida (unidades)</label>
+                    <input type="number" id="cantidad" name="cantidad" required placeholder="Ej: 5000">
+                </div>
+                <div class="form-group">
+                    <label for="planta_origen">Planta de Origen</label>
+                    <select id="planta_origen" name="planta_origen" required>
+                        <option value="">-- Seleccione planta --</option>
+                        <option value="La Paz"> La Paz (Mecapaca)</option>
+                        <option value="Cochabamba"> Cochabamba</option>
+                        <option value="Santa Cruz"> Santa Cruz</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- CONTROL DE CALIDAD -->
+            <fieldset style="border: 2px dashed rgba(212, 165, 116, 0.3); border-radius: var(--radius-lg); padding: var(--spacing-xl); margin: var(--spacing-xl) 0; background-color: rgba(212, 165, 116, 0.01);">
+                <legend style="padding: 0 var(--spacing-md); color: var(--primary-color); font-weight: 600; font-size: 0.9rem; text-transform: uppercase;">✅ Control de Calidad</legend>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="calidad_resultado">Resultado de Calidad</label>
+                        <select id="calidad_resultado" name="calidad_resultado" required>
+                            <option value="">-- Seleccione resultado --</option>
+                            <option value="Aprobado"> Aprobado</option>
+                            <option value="Rechazado"> Rechazado</option>
+                            <option value="Condicional"> Condicional</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tecnico">Técnico Responsable</label>
+                        <input type="text" id="tecnico" name="tecnico" placeholder="Nombre del técnico">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="observaciones">Observaciones del Control</label>
+                    <textarea id="observaciones" name="observaciones" placeholder="Detalles sobre el control de calidad realizado"></textarea>
+                </div>
+            </fieldset>
+
+            <button type="submit" class="btn btn-primary"> Guardar Lote</button>
+        </form>
+    </div>
+
+    <!-- TABLA DE LOTES -->
+    <div class="content-section">
+        <h3> Lotes Registrados en el Sistema</h3>
+        
+        <div class="filter-bar">
+            <input type="text" placeholder=" Buscar lote..." id="search-lotes">
+            <select id="filter-calidad">
+                <option value="">Filtrar por calidad...</option>
+                <option value="Aprobado">Aprobado</option>
+                <option value="Rechazado">Rechazado</option>
+                <option value="Condicional">Condicional</option>
+            </select>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Lote #</th>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Producción</th>
+                        <th>Vencimiento</th>
+                        <th>Planta</th>
+                        <th>Calidad</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if lotes %}
+                        {% for lote in lotes %}
+                            <tr {% if lote.control_calidad == 'Rechazado' %}class="row-alert"{% endif %}>
+                                <td><strong>{{ lote.numero_lote }}</strong></td>
+                                <td>{{ lote.nombre_comercial }}</td>
+                                <td>{{ lote.cantidad_producida }} u.</td>
+                                <td>{{ lote.fecha_produccion }}</td>
+                                <td>{{ lote.fecha_vencimiento }}</td>
+                                <td>{{ lote.planta_nombre }}</td>
+                                <td>
+                                    {% if lote.control_calidad == 'Aprobado' %}
+                                        <span class="badge" style="background-color: var(--success); color: white;"> Aprobado</span>
+                                    {% elif lote.control_calidad == 'Rechazado' %}
+                                        <span class="badge" style="background-color: var(--danger); color: white;"> Rechazado</span>
+                                    {% else %}
+                                        <span class="badge" style="background-color: var(--warning); color: white;"> Condicional</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="/lotes/editar/{{ lote.id }}" class="btn btn-secondary btn-small">Editar</a>
+                                    <a href="/lotes/eliminar/{{ lote.id }}" class="btn btn-danger btn-small" onclick="return confirm('¿Eliminar este lote?');">Eliminar</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
+                                 No hay lotes registrados aún
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.getElementById('search-lotes').addEventListener('keyup', function(e) {
+            const search = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.data-table tbody tr');
+            
+            rows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(search) ? '' : 'none';
+            });
+        });
+
+        document.getElementById('filter-calidad').addEventListener('change', function(e) {
+            const filter = e.target.value;
+            const rows = document.querySelectorAll('.data-table tbody tr');
+            
+            rows.forEach(row => {
+                if (filter === '') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = row.innerText.includes(filter) ? '' : 'none';
+                }
+            });
+        });
+    </script>
+{% endblock %}
                 <h3>Lotes Registrados</h3>
                 <div class="filter-bar">
                     <input type="text" id="search_lote" placeholder="Número de lote..." value="{{ search }}">

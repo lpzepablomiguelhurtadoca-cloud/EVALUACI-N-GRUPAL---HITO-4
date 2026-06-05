@@ -1,83 +1,163 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard General - PIL Andina</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
-</head>
-<body>
-    <div id="dashboard-layout">
-        <aside id="sidebar">
-            <div class="sidebar-brand">
-                <h2>PIL ANDINA</h2>
-                <small>Cervecería Boliviana</small>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="/dashboard" class="active">📊 Dashboard Inicio</a></li>
-                    <li><a href="/productos">🍺 Gestión Productos</a></li>
-                    <li><a href="/bodegas">🏭 Plantas y Bodegas</a></li>
-                    <li><a href="/lotes">📦 Lotes de Producción</a></li>
-                    <li><a href="/inventario">🗄️ Control Inventarios</a></li>
-                    <li><a href="/distribuidores">🚚 Distribuidores y Pedidos</a></li>
-                    <li><a href="/reportes">📈 Reportes Gerenciales</a></li>
-                    <li><a href="/admin">🔐 Administración y Backups</a></li>
-                    <li><a href="/logout" style="color: #ff4d4d;">🚪 Cerrar Sesión</a></li>
-                </ul>
-            </nav>
-        </aside>
+{% extends "base.html" %}
 
-        <main id="main-content">
-            <header id="top-bar">
-                <div class="user-info">
-                    <p>Bienvenido: <strong>{{ username }}</strong> <span class="badge">Rol: {{ rol|capitalize }}</span></p>
-                </div>
-                <div class="system-time">
-                    <p>Planta Actual: <strong>La Paz (Mecapaca)</strong></p>
-                </div>
-            </header>
+{% block title %}Dashboard General - CBN{% endblock %}
 
-            <section id="metrics-grid">
-                <div class="metric-card">
-                    <h3>Stock Consolidado</h3>
-                    <p class="number">{{ metrics.total_unidades|default(0) }} <small>u.</small></p>
-                    <span class="trend positive">Actualizado</span>
-                </div>
-                <div class="metric-card alert">
-                    <h3>Alertas de Vencimiento</h3>
-                    <p class="number">{{ metrics.lotes_por_vencer|default(0) }}</p>
-                    <span class="trend negative">⚠️ Lotes próximos a vencer</span>
-                </div>
-                <div class="metric-card">
-                    <h3>Pedidos Pendientes</h3>
-                    <p class="number">{{ metrics.pedidos_pendientes|default(0) }}</p>
-                    <span class="trend warning">🚚 Requieren despacho inmediato</span>
-                </div>
-                <div class="metric-card">
-                    <h3>Plantas Activas</h3>
-                    <p class="number">{{ metrics.plantas_activas|default(0) }} / 3</p>
-                    <span class="trend static">LP - CB - SC</span>
-                </div>
-            </section>
-
-            <section id="charts-container">
-                <div class="chart-box">
-                    <h3>Rotación de Inventario (Últimos 6 meses)</h3>
-                    <div class="mock-chart">
-                        {% if meses and ventas %}
-                            <ul>
-                            {% for i in range(meses|length) %}
-                                <li>{{ meses[i] }}: {{ ventas[i] }} unidades vendidas</li>
-                            {% endfor %}
-                            </ul>
-                        {% else %}
-                            <p>No hay datos de movimientos en los últimos 6 meses.</p>
-                        {% endif %}
-                    </div>
-                </div>
-            </section>
-        </main>
+{% block content %}
+    <div class="breadcrumb">
+        <span></span>
+        <span>Dashboard</span>
+        <span>/</span>
+        <span style="color: var(--text-muted);">Resumen General</span>
     </div>
-</body>
-</html>
+
+    <h2 style="margin-bottom: var(--spacing-2xl);">Resumen General del Sistema</h2>
+
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <h3> Stock Consolidado</h3>
+            <div class="metric-value">{{ metrics.total_unidades|default(0) }} <small>u.</small></div>
+            <p class="metric-label">Total de unidades en inventario</p>
+        </div>
+
+        <div class="metric-card alert">
+            <h3> Alertas de Vencimiento</h3>
+            <div class="metric-value">{{ metrics.lotes_por_vencer|default(0) }}</div>
+            <p class="metric-label">Lotes próximos a vencer en 30 días</p>
+        </div>
+
+        <div class="metric-card">
+            <h3> Pedidos Pendientes</h3>
+            <div class="metric-value">{{ metrics.pedidos_pendientes|default(0) }}</div>
+            <p class="metric-label">Requieren despacho inmediato</p>
+        </div>
+
+        <div class="metric-card">
+            <h3> Plantas Activas</h3>
+            <div class="metric-value">{{ metrics.plantas_activas|default(0) }} <small>/3</small></div>
+            <p class="metric-label">LP • CB • SC en operación</p>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3> Rotación de Inventario (Últimos 6 meses)</h3>
+
+        <div style="padding: var(--spacing-xl); background: rgba(212, 165, 116, 0.02); border-radius: var(--radius-md); border: 1px solid rgba(212, 165, 116, 0.1);">
+
+            {% if meses and ventas %}
+                <div style="display: grid; gap: var(--spacing-lg);">
+
+                    {% for i in range(meses|length) %}
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+
+                        <div style="flex: 1; max-width: 150px;">
+                            <strong>{{ meses[i] }}</strong>
+                        </div>
+
+                        <div style="flex: 1; height: 30px; background: rgba(212, 165, 116, 0.1); border-radius: var(--radius-sm); overflow: hidden; position: relative;">
+
+                            <div style="
+                                height: 100%;
+                                background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+                                width: {{ (ventas[i] / (max_ventas * 1.2)) * 100 }}%;
+                                transition: width 0.5s ease;
+                            ">
+                            </div>
+
+                        </div>
+
+                        <div style="text-align: right; min-width: 100px; padding-left: var(--spacing-lg);">
+                            <strong>{{ ventas[i] }}</strong>
+                            <span style="color: var(--text-muted);">unidades</span>
+                        </div>
+
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+                <div style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
+                    <p> No hay datos de movimientos en los últimos 6 meses.</p>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3> Acciones Rápidas</h3>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-lg);">
+
+            <div style="padding: var(--spacing-lg); border: 2px dashed rgba(212, 165, 116, 0.2); border-radius: var(--radius-lg); text-align: center;">
+                <a href="/productos" style="display: block; text-decoration: none; color: inherit;">
+                    <div style="font-size: 2rem; margin-bottom: var(--spacing-md);">🍺</div>
+                    <strong>Gestionar Productos</strong>
+                </a>
+            </div>
+
+            <div style="padding: var(--spacing-lg); border: 2px dashed rgba(212, 165, 116, 0.2); border-radius: var(--radius-lg); text-align: center;">
+                <a href="/inventario" style="display: block; text-decoration: none; color: inherit;">
+                    <div style="font-size: 2rem; margin-bottom: var(--spacing-md);">🗄️</div>
+                    <strong>Control de Inventario</strong>
+                </a>
+            </div>
+
+            <div style="padding: var(--spacing-lg); border: 2px dashed rgba(212, 165, 116, 0.2); border-radius: var(--radius-lg); text-align: center;">
+                <a href="/distribuidores" style="display: block; text-decoration: none; color: inherit;">
+                    <div style="font-size: 2rem; margin-bottom: var(--spacing-md);">🚚</div>
+                    <strong>Distribuidores</strong>
+                </a>
+            </div>
+
+            <div style="padding: var(--spacing-lg); border: 2px dashed rgba(212, 165, 116, 0.2); border-radius: var(--radius-lg); text-align: center;">
+                <a href="/reportes" style="display: block; text-decoration: none; color: inherit;">
+                    <div style="font-size: 2rem; margin-bottom: var(--spacing-md);">📈</div>
+                    <strong>Reportes</strong>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3>ℹInformación del Sistema</h3>
+
+        <div style="display: grid; gap: var(--spacing-lg);">
+
+            <div style="display: flex; justify-content: space-between; padding: var(--spacing-md); background: rgba(212, 165, 116, 0.02); border-radius: var(--radius-md); border-left: 3px solid var(--primary-color);">
+                <span> Última actualización:</span>
+                <strong id="last-update"></strong>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; padding: var(--spacing-md); background: rgba(212, 165, 116, 0.02); border-radius: var(--radius-md); border-left: 3px solid var(--primary-color);">
+                <span> Usuario activo:</span>
+                <strong>{{ username }}</strong>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; padding: var(--spacing-md); background: rgba(212, 165, 116, 0.02); border-radius: var(--radius-md); border-left: 3px solid var(--primary-color);">
+                <span> Rol de acceso:</span>
+                <strong>{{ rol|capitalize }}</strong>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const now = new Date();
+
+    const lastUpdate = document.getElementById('last-update');
+    if (lastUpdate) {
+        lastUpdate.textContent = now.toLocaleString('es-BO');
+    }
+
+    const systemTime = document.getElementById('system-time');
+    if (systemTime) {
+        setInterval(() => {
+            systemTime.textContent = new Date().toLocaleString('es-BO');
+        }, 1000);
+    }
+</script>
+{% endblock %}

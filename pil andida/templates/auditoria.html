@@ -4,23 +4,23 @@
 
 {% block content %}
     <div class="breadcrumb">
-        <span>🔍</span>
+        <span></span>
         <span><a href="/dashboard">Dashboard</a></span>
         <span>/</span>
         <span style="color: var(--text-muted);">Auditoría</span>
     </div>
 
-    <h2 style="margin-bottom: var(--spacing-lg);">🔍 Historial de Auditoría del Sistema</h2>
+    <h2 style="margin-bottom: var(--spacing-lg);"> Historial de Auditoría del Sistema</h2>
     <p style="color: var(--text-muted); margin-bottom: var(--spacing-2xl);">
         Registro detallado de todas las operaciones DML (INSERT, UPDATE, DELETE) realizadas en el sistema
     </p>
 
     <!-- FILTROS -->
     <div class="content-section">
-        <h3>🔎 Filtros de Búsqueda</h3>
+        <h3> Filtros de Búsqueda</h3>
         
         <div class="filter-bar">
-            <input type="text" placeholder="🔍 Buscar usuario o detalles..." id="search-logs">
+            <input type="text" placeholder=" Buscar usuario o detalles..." id="search-logs">
             <select id="filter-accion">
                 <option value="">Filtrar por acción...</option>
                 <option value="INSERT">INSERT</option>
@@ -41,19 +41,19 @@
 
     <!-- TABLA DE LOGS -->
     <div class="content-section">
-        <h3>📋 Log de Eventos del Sistema</h3>
+        <h3>Log de Eventos del Sistema</h3>
         
         <div class="table-container">
             <table class="data-table" id="auditTable">
                 <thead>
                     <tr>
                         <th>ID Log</th>
-                        <th>👤 Usuario</th>
-                        <th>⚙️ Acción</th>
-                        <th>📊 Tabla</th>
-                        <th>📝 Detalles</th>
-                        <th>📅 Fecha y Hora</th>
-                        <th>🌐 IP</th>
+                        <th> Usuario</th>
+                        <th> Acción</th>
+                        <th> Tabla</th>
+                        <th> Detalles</th>
+                        <th> Fecha y Hora</th>
+                        <th> IP</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,11 +64,11 @@
                                 <td>{{ log.usuario }}</td>
                                 <td>
                                     {% if log.accion == 'INSERT' %}
-                                        <span class="badge" style="background-color: var(--success); color: white;">➕ INSERT</span>
+                                        <span class="badge" style="background-color: var(--success); color: white;"> INSERT</span>
                                     {% elif log.accion == 'UPDATE' %}
-                                        <span class="badge" style="background-color: var(--info); color: white;">✏️ UPDATE</span>
+                                        <span class="badge" style="background-color: var(--info); color: white;"> UPDATE</span>
                                     {% elif log.accion == 'DELETE' %}
-                                        <span class="badge" style="background-color: var(--danger); color: white;">🗑️ DELETE</span>
+                                        <span class="badge" style="background-color: var(--danger); color: white;"> DELETE</span>
                                     {% else %}
                                         <span class="badge" style="background-color: var(--warning); color: white;">{{ log.accion }}</span>
                                     {% endif %}
@@ -84,7 +84,7 @@
                     {% else %}
                         <tr>
                             <td colspan="7" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
-                                🔍 No hay registros de auditoría disponibles
+                                 No hay registros de auditoría disponibles
                             </td>
                         </tr>
                     {% endif %}
@@ -96,25 +96,25 @@
     <!-- ESTADÍSTICAS DE AUDITORÍA -->
     <div class="metrics-grid">
         <div class="metric-card">
-            <h3>📊 Total de Eventos</h3>
+            <h3> Total de Eventos</h3>
             <div class="metric-value">{{ logs|length }}</div>
             <p class="metric-label">Registrados en el sistema</p>
         </div>
 
         <div class="metric-card">
-            <h3>➕ Inserciones</h3>
+            <h3> Inserciones</h3>
             <div class="metric-value">{{ inserciones|default(0) }}</div>
             <p class="metric-label">Nuevos registros creados</p>
         </div>
 
         <div class="metric-card">
-            <h3>✏️ Actualizaciones</h3>
+            <h3> Actualizaciones</h3>
             <div class="metric-value">{{ actualizaciones|default(0) }}</div>
             <p class="metric-label">Registros modificados</p>
         </div>
 
         <div class="metric-card alert">
-            <h3>🗑️ Eliminaciones</h3>
+            <h3> Eliminaciones</h3>
             <div class="metric-value">{{ eliminaciones|default(0) }}</div>
             <p class="metric-label">Registros eliminados</p>
         </div>

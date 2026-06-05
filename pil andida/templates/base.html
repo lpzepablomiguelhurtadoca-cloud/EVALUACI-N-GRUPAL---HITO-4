@@ -16,7 +16,7 @@
         <!-- SIDEBAR NAVIGATION -->
         <aside id="sidebar">
             <div class="sidebar-brand">
-                <h2>🍺 PIL ANDINA</h2>
+                <h2> CBN</h2>
                 <span class="tagline">Cervecería Boliviana</span>
             </div>
             
@@ -24,47 +24,47 @@
                 <ul>
                     <li>
                         <a href="/dashboard" {% if request.endpoint == 'main.dashboard' %}class="active"{% endif %}>
-                            📊 Dashboard
+                            Dashboard
                         </a>
                     </li>
                     <li>
                         <a href="/productos" {% if request.endpoint == 'productos.productos' %}class="active"{% endif %}>
-                            🍺 Productos
+                             Productos
                         </a>
                     </li>
                     <li>
                         <a href="/bodegas" {% if request.endpoint == 'plantas_bodegas.plantas' %}class="active"{% endif %}>
-                            🏭 Plantas & Bodegas
+                             Plantas & Bodegas
                         </a>
                     </li>
                     <li>
                         <a href="/lotes" {% if request.endpoint == 'lotes.lotes' %}class="active"{% endif %}>
-                            📦 Lotes de Producción
+                             Lotes de Producción
                         </a>
                     </li>
                     <li>
                         <a href="/inventario" {% if request.endpoint == 'inventario.inventario' %}class="active"{% endif %}>
-                            🗄️ Control de Inventario
+                             Control de Inventario
                         </a>
                     </li>
                     <li>
                         <a href="/distribuidores" {% if request.endpoint == 'distribuidores.distribuidores' %}class="active"{% endif %}>
-                            🚚 Distribuidores & Pedidos
+                             Distribuidores & Pedidos
                         </a>
                     </li>
                     <li>
                         <a href="/reportes" {% if request.endpoint == 'reportes.reportes' %}class="active"{% endif %}>
-                            📈 Reportes Gerenciales
+                             Reportes Gerenciales
                         </a>
                     </li>
                     <li>
                         <a href="/admin" {% if request.endpoint == 'admin.admin' %}class="active"{% endif %}>
-                            🔐 Administración
+                             Administración
                         </a>
                     </li>
                     <li>
                         <a href="/logout" style="color: #ef4444;">
-                            🚪 Cerrar Sesión
+                             Cerrar Sesión
                         </a>
                     </li>
                 </ul>

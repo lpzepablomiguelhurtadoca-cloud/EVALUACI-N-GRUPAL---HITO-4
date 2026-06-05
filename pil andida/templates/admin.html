@@ -4,26 +4,26 @@
 
 {% block content %}
     <div class="breadcrumb">
-        <span>🔐</span>
+        <span></span>
         <span><a href="/dashboard">Dashboard</a></span>
         <span>/</span>
         <span style="color: var(--text-muted);">Administración</span>
     </div>
 
-    <h2 style="margin-bottom: var(--spacing-2xl);">🔐 Panel de Control Técnico</h2>
+    <h2 style="margin-bottom: var(--spacing-2xl);">Panel de Control Técnico</h2>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--spacing-xl);">
         
         <!-- SECCIÓN DE BACKUP -->
         <div class="content-section">
-            <h3>🗄️ Respaldo y Restauración de Base de Datos</h3>
+            <h3> Respaldo y Restauración de Base de Datos</h3>
             
             <form action="/admin/backup/crear" method="POST" style="margin-bottom: var(--spacing-lg);">
                 <p style="margin-bottom: var(--spacing-lg); color: var(--text-muted); font-size: 0.9rem;">
                     Genere una copia de seguridad de toda la base de datos del sistema.
                 </p>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">
-                    ⚡ Generar Backup Ahora
+                     Generar Backup Ahora
                 </button>
             </form>
 
@@ -48,7 +48,7 @@
                                     <td>{{ b.tamano }}</td>
                                     <td>
                                         <form action="/admin/backup/restaurar/{{ b.nombre }}" method="POST" style="display: inline;" onsubmit="return confirm('¿Restaurar este backup? Esta acción no se puede deshacer.')">
-                                            <button type="submit" class="btn btn-warning btn-small">🔄 Restaurar</button>
+                                            <button type="submit" class="btn btn-warning btn-small"> Restaurar</button>
                                         </form>
                                         <a href="/admin/backup/descargar/{{ b.nombre }}" class="btn btn-secondary btn-small">📥 Descargar</a>
                                     </td>
@@ -57,7 +57,7 @@
                         {% else %}
                             <tr>
                                 <td colspan="4" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
-                                    📂 No hay copias de seguridad disponibles
+                                     No hay copias de seguridad disponibles
                                 </td>
                             </tr>
                         {% endif %}
@@ -68,12 +68,12 @@
 
         <!-- SECCIÓN DE MONITOREO -->
         <div class="content-section">
-            <h3>📊 Monitoreo del Sistema</h3>
+            <h3>Monitoreo del Sistema</h3>
             
             <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
                 <div style="padding: var(--spacing-lg); background: rgba(212, 165, 116, 0.05); border-radius: var(--radius-md); border-left: 3px solid var(--success);">
                     <p style="margin-bottom: 0.5rem; color: var(--text-muted);">Estado de Base de Datos</p>
-                    <p style="margin: 0; font-size: 1.25rem;"><strong style="color: var(--success);">✅ CONECTADO</strong></p>
+                    <p style="margin: 0; font-size: 1.25rem;"><strong style="color: var(--success);"> CONECTADO</strong></p>
                 </div>
 
                 <div style="padding: var(--spacing-lg); background: rgba(212, 165, 116, 0.05); border-radius: var(--radius-md); border-left: 3px solid var(--info);">
@@ -86,14 +86,14 @@
                     <p style="margin: 0; font-size: 1.25rem;"><strong id="espacio-disco">--</strong></p>
                 </div>
 
-                <button type="button" class="btn btn-secondary" onclick="actualizarEstadoSistema()">🔄 Actualizar Estado</button>
+                <button type="button" class="btn btn-secondary" onclick="actualizarEstadoSistema()"> Actualizar Estado</button>
             </div>
         </div>
     </div>
 
     <!-- SECCIÓN DE AUDITORÍA -->
     <div class="content-section">
-        <h3>🔍 Últimos Eventos de Auditoría</h3>
+        <h3> Últimos Eventos de Auditoría</h3>
         
         <div class="table-container">
             <table class="data-table">
@@ -120,7 +120,7 @@
                     {% else %}
                         <tr>
                             <td colspan="5" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
-                                🔍 No hay registros de auditoría disponibles
+                                 No hay registros de auditoría disponibles
                             </td>
                         </tr>
                     {% endif %}
@@ -131,9 +131,9 @@
 
     <!-- SECCIÓN DE USUARIOS -->
     <div class="content-section">
-        <h3>👥 Gestión de Usuarios</h3>
+        <h3> Gestión de Usuarios</h3>
         
-        <button type="button" class="btn btn-primary" style="margin-bottom: var(--spacing-lg);">➕ Agregar Nuevo Usuario</button>
+        <button type="button" class="btn btn-primary" style="margin-bottom: var(--spacing-lg);"> Agregar Nuevo Usuario</button>
         
         <div class="table-container">
             <table class="data-table">
@@ -160,9 +160,9 @@
                                 </td>
                                 <td>
                                     {% if u.activo %}
-                                        <span class="badge" style="background-color: var(--success); color: white;">✅ Activo</span>
+                                        <span class="badge" style="background-color: var(--success); color: white;"> Activo</span>
                                     {% else %}
-                                        <span class="badge" style="background-color: var(--danger); color: white;">⛔ Inactivo</span>
+                                        <span class="badge" style="background-color: var(--danger); color: white;"> Inactivo</span>
                                     {% endif %}
                                 </td>
                                 <td>{{ u.ultimo_acceso }}</td>
@@ -174,7 +174,7 @@
                     {% else %}
                         <tr>
                             <td colspan="6" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
-                                👥 No hay usuarios registrados
+                                 No hay usuarios registrados
                             </td>
                         </tr>
                     {% endif %}
@@ -211,10 +211,10 @@
                 </section>
             </div>
             <section class="admin-card">
-                <h3>📊 Exportación de Reportes</h3>
+                <h3>Exportación de Reportes</h3>
                 <div class="export-buttons-group">
-                    <a href="/reportes/exportar/csv?tipo=stock_planta" class="btn-export">📄 CSV Stock</a>
-                    <a href="/reportes/exportar/excel?tipo=proximos_vencer" class="btn-export">📊 Excel Próximos a Vencer</a>
+                    <a href="/reportes/exportar/csv?tipo=stock_planta" class="btn-export"> CSV Stock</a>
+                    <a href="/reportes/exportar/excel?tipo=proximos_vencer" class="btn-export">Excel Próximos a Vencer</a>
                 </div>
             </section>
         </main>

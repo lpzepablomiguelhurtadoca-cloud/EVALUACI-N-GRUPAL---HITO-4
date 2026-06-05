@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="breadcrumb">
-        <span>🏭</span>
+        <span></span>
         <span><a href="/dashboard">Dashboard</a></span>
         <span>/</span>
         <span style="color: var(--text-muted);">Plantas & Bodegas</span>
@@ -14,7 +14,7 @@
 
     <!-- SECCIÓN DE REGISTRO DE BODEGA -->
     <div class="content-section">
-        <h3>➕ Asignar Nueva Bodega a Planta</h3>
+        <h3> Asignar Nueva Bodega a Planta</h3>
         
         <form action="/bodegas/guardar" method="POST">
             <div class="form-row">
@@ -22,19 +22,19 @@
                     <label for="planta_id">Planta de Destino</label>
                     <select id="planta_id" name="planta_id" required>
                         <option value="">-- Seleccione planta --</option>
-                        <option value="1">🏭 La Paz - Mecapaca</option>
-                        <option value="2">🏭 Cochabamba - Sacaba</option>
-                        <option value="3">🏭 Santa Cruz - Palmasola</option>
+                        <option value="1"> La Paz - Mecapaca</option>
+                        <option value="2"> Cochabamba - Sacaba</option>
+                        <option value="3"> Santa Cruz - Palmasola</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="tipo_bodega">Tipo de Bodega</label>
                     <select id="tipo_bodega" name="tipo_bodega" required>
                         <option value="">-- Seleccione tipo --</option>
-                        <option value="Producto Terminado">📦 Producto Terminado</option>
-                        <option value="Insumos">🔧 Insumos</option>
-                        <option value="Refrigerado">❄️ Refrigerado</option>
-                        <option value="Químicos">⚗️ Químicos</option>
+                        <option value="Producto Terminado"> Producto Terminado</option>
+                        <option value="Insumos"> Insumos</option>
+                        <option value="Refrigerado"> Refrigerado</option>
+                        <option value="Químicos"> Químicos</option>
                     </select>
                 </div>
             </div>
@@ -72,7 +72,7 @@
             {% if plantas %}
                 {% for planta in plantas %}
                     <div style="background: rgba(212, 165, 116, 0.05); border: 1px solid rgba(212, 165, 116, 0.2); border-radius: var(--radius-lg); padding: var(--spacing-lg); overflow: hidden;">
-                        <h4 style="margin-bottom: var(--spacing-md); color: var(--primary-color);">🏭 {{ planta.nombre }}</h4>
+                        <h4 style="margin-bottom: var(--spacing-md); color: var(--primary-color);"> {{ planta.nombre }}</h4>
                         
                         <div style="margin-bottom: var(--spacing-md); padding-bottom: var(--spacing-md); border-bottom: 1px solid rgba(212, 165, 116, 0.1);">
                             <p style="margin: 0.25rem 0; font-size: 0.9rem;"><strong>Ubicación:</strong> {{ planta.ubicacion }}</p>
@@ -88,7 +88,7 @@
                                     <div style="padding: var(--spacing-sm) 0; border-bottom: 1px solid rgba(212, 165, 116, 0.1);">
                                         <p style="margin: 0; font-size: 0.85rem;"><strong>{{ bodega.nombre_bodega }}</strong></p>
                                         <p style="margin: 0.25rem 0; font-size: 0.75rem; color: var(--text-muted);">
-                                            📦 {{ bodega.tipo }} | 🌡️ {{ bodega.temperatura }}°C | 📊 {{ bodega.stock_actual }}/{{ bodega.capacidad }}
+                                             {{ bodega.tipo }} | 🌡️ {{ bodega.temperatura }}°C |  {{ bodega.stock_actual }}/{{ bodega.capacidad }}
                                         </p>
                                     </div>
                                 {% endfor %}
@@ -102,7 +102,7 @@
                 {% endfor %}
             {% else %}
                 <div style="grid-column: 1 / -1; text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
-                    🏭 No hay plantas registradas en el sistema
+                     No hay plantas registradas en el sistema
                 </div>
             {% endif %}
         </div>
@@ -110,10 +110,10 @@
 
     <!-- TABLA DETALLADA DE BODEGAS -->
     <div class="content-section">
-        <h3>📦 Inventario de Bodegas Detallado</h3>
+        <h3> Inventario de Bodegas Detallado</h3>
         
         <div class="filter-bar">
-            <input type="text" placeholder="🔍 Buscar bodega..." id="search-bodegas">
+            <input type="text" placeholder=" Buscar bodega..." id="search-bodegas">
             <select id="filter-tipo-bodega">
                 <option value="">Filtrar por tipo...</option>
                 <option value="Producto Terminado">Producto Terminado</option>
@@ -167,7 +167,7 @@
                     {% else %}
                         <tr>
                             <td colspan="9" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
-                                📦 No hay bodegas registradas
+                                 No hay bodegas registradas
                             </td>
                         </tr>
                     {% endif %}

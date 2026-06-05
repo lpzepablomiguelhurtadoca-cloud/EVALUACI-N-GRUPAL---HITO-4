@@ -4,13 +4,13 @@
 
 {% block content %}
     <div class="breadcrumb">
-        <span>🗄️</span>
+        <span></span>
         <span><a href="/dashboard">Dashboard</a></span>
         <span>/</span>
         <span style="color: var(--text-muted);">Inventario</span>
     </div>
 
-    <h2 style="margin-bottom: var(--spacing-2xl);">🗄️ Control de Inventario en Bodegas</h2>
+    <h2 style="margin-bottom: var(--spacing-2xl);"> Control de Inventario en Bodegas</h2>
 
     <!-- ALERTAS -->
     {% if alertas %}
@@ -41,9 +41,9 @@
                     <label for="tipo_movimiento">Tipo de Ajuste</label>
                     <select id="tipo_movimiento" name="tipo_movimiento" required>
                         <option value="">-- Seleccione tipo --</option>
-                        <option value="Merma por Transporte">📦 Merma por Transporte</option>
-                        <option value="Falla de Envasado">⚠️ Falla de Envasado</option>
-                        <option value="Ajuste de Auditoría">✅ Ajuste Manual</option>
+                        <option value="Merma por Transporte"> Merma por Transporte</option>
+                        <option value="Falla de Envasado"> Falla de Envasado</option>
+                        <option value="Ajuste de Auditoría"> Ajuste Manual</option>
                     </select>
                 </div>
             </div>
@@ -64,13 +64,13 @@
                 <textarea id="observaciones" name="observaciones" placeholder="Detalles adicionales sobre el ajuste"></textarea>
             </div>
 
-            <button type="submit" class="btn btn-danger">⚙️ Aplicar Descuento de Stock</button>
+            <button type="submit" class="btn btn-danger"> Aplicar Descuento de Stock</button>
         </form>
     </div>
 
     <!-- TABLA DE STOCK -->
     <div class="content-section">
-        <h3>📋 Estado del Stock en Tiempo Real</h3>
+        <h3> Estado del Stock en Tiempo Real</h3>
         
         <div class="filter-bar">
             <input type="text" placeholder="🔍 Buscar producto..." id="search-stock">

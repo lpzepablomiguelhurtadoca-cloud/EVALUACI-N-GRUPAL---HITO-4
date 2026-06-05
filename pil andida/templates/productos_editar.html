@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="breadcrumb">
-        <span>🍺</span>
+        <span></span>
         <span><a href="/dashboard">Dashboard</a></span>
         <span>/</span>
         <span><a href="/productos">Productos</a></span>
@@ -12,7 +12,7 @@
         <span style="color: var(--text-muted);">Editar</span>
     </div>
 
-    <h2 style="margin-bottom: var(--spacing-2xl);">✏️ Editar Producto</h2>
+    <h2 style="margin-bottom: var(--spacing-2xl);"> Editar Producto</h2>
 
     <div class="content-section">
         <form action="/productos/guardar/{{ producto.id }}" method="POST">
@@ -61,8 +61,8 @@
             </div>
 
             <div class="form-row">
-                <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
-                <a href="/productos" class="btn btn-secondary">❌ Cancelar</a>
+                <button type="submit" class="btn btn-primary"> Guardar Cambios</button>
+                <a href="/productos" class="btn btn-secondary"> Cancelar</a>
             </div>
         </form>
     </div>

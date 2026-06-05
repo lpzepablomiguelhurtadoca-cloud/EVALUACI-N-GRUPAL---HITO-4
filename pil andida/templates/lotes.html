@@ -4,17 +4,17 @@
 
 {% block content %}
     <div class="breadcrumb">
-        <span>📦</span>
+        <span></span>
         <span><a href="/dashboard">Dashboard</a></span>
         <span>/</span>
         <span style="color: var(--text-muted);">Lotes de Producción</span>
     </div>
 
-    <h2 style="margin-bottom: var(--spacing-2xl);">📦 Control de Lotes de Producción</h2>
+    <h2 style="margin-bottom: var(--spacing-2xl);"> Control de Lotes de Producción</h2>
 
     <!-- SECCIÓN DE REGISTRO -->
     <div class="content-section">
-        <h3>➕ Registrar Nuevo Lote de Producción</h3>
+        <h3> Registrar Nuevo Lote de Producción</h3>
         
         <form action="/lotes/guardar" method="POST">
             <div class="form-row">
@@ -53,9 +53,9 @@
                     <label for="planta_origen">Planta de Origen</label>
                     <select id="planta_origen" name="planta_origen" required>
                         <option value="">-- Seleccione planta --</option>
-                        <option value="La Paz">🏭 La Paz (Mecapaca)</option>
-                        <option value="Cochabamba">🏭 Cochabamba</option>
-                        <option value="Santa Cruz">🏭 Santa Cruz</option>
+                        <option value="La Paz"> La Paz (Mecapaca)</option>
+                        <option value="Cochabamba"> Cochabamba</option>
+                        <option value="Santa Cruz"> Santa Cruz</option>
                     </select>
                 </div>
             </div>
@@ -69,9 +69,9 @@
                         <label for="calidad_resultado">Resultado de Calidad</label>
                         <select id="calidad_resultado" name="calidad_resultado" required>
                             <option value="">-- Seleccione resultado --</option>
-                            <option value="Aprobado">✅ Aprobado</option>
-                            <option value="Rechazado">❌ Rechazado</option>
-                            <option value="Condicional">⚠️ Condicional</option>
+                            <option value="Aprobado"> Aprobado</option>
+                            <option value="Rechazado"> Rechazado</option>
+                            <option value="Condicional"> Condicional</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -86,16 +86,16 @@
                 </div>
             </fieldset>
 
-            <button type="submit" class="btn btn-primary">💾 Guardar Lote</button>
+            <button type="submit" class="btn btn-primary"> Guardar Lote</button>
         </form>
     </div>
 
     <!-- TABLA DE LOTES -->
     <div class="content-section">
-        <h3>📋 Lotes Registrados en el Sistema</h3>
+        <h3> Lotes Registrados en el Sistema</h3>
         
         <div class="filter-bar">
-            <input type="text" placeholder="🔍 Buscar lote..." id="search-lotes">
+            <input type="text" placeholder=" Buscar lote..." id="search-lotes">
             <select id="filter-calidad">
                 <option value="">Filtrar por calidad...</option>
                 <option value="Aprobado">Aprobado</option>
@@ -130,11 +130,11 @@
                                 <td>{{ lote.planta_nombre }}</td>
                                 <td>
                                     {% if lote.control_calidad == 'Aprobado' %}
-                                        <span class="badge" style="background-color: var(--success); color: white;">✅ Aprobado</span>
+                                        <span class="badge" style="background-color: var(--success); color: white;"> Aprobado</span>
                                     {% elif lote.control_calidad == 'Rechazado' %}
-                                        <span class="badge" style="background-color: var(--danger); color: white;">❌ Rechazado</span>
+                                        <span class="badge" style="background-color: var(--danger); color: white;"> Rechazado</span>
                                     {% else %}
-                                        <span class="badge" style="background-color: var(--warning); color: white;">⚠️ Condicional</span>
+                                        <span class="badge" style="background-color: var(--warning); color: white;"> Condicional</span>
                                     {% endif %}
                                 </td>
                                 <td>
@@ -146,7 +146,7 @@
                     {% else %}
                         <tr>
                             <td colspan="8" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
-                                📦 No hay lotes registrados aún
+                                 No hay lotes registrados aún
                             </td>
                         </tr>
                     {% endif %}

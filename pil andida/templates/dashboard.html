@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard General - PIL Andina{% endblock %}
+{% block title %}Dashboard General - CBN{% endblock %}
 
 {% block content %}
     <div class="breadcrumb">
-        <span>📊</span>
+        <span></span>
         <span>Dashboard</span>
         <span>/</span>
         <span style="color: var(--text-muted);">Resumen General</span>
@@ -12,138 +12,152 @@
 
     <h2 style="margin-bottom: var(--spacing-2xl);">Resumen General del Sistema</h2>
 
-    <!-- GRID DE MÉTRICAS PRINCIPALES -->
     <div class="metrics-grid">
         <div class="metric-card">
-            <h3>📦 Stock Consolidado</h3>
+            <h3> Stock Consolidado</h3>
             <div class="metric-value">{{ metrics.total_unidades|default(0) }} <small>u.</small></div>
             <p class="metric-label">Total de unidades en inventario</p>
         </div>
 
         <div class="metric-card alert">
-            <h3>⚠️ Alertas de Vencimiento</h3>
+            <h3> Alertas de Vencimiento</h3>
             <div class="metric-value">{{ metrics.lotes_por_vencer|default(0) }}</div>
             <p class="metric-label">Lotes próximos a vencer en 30 días</p>
         </div>
 
         <div class="metric-card">
-            <h3>🚚 Pedidos Pendientes</h3>
+            <h3> Pedidos Pendientes</h3>
             <div class="metric-value">{{ metrics.pedidos_pendientes|default(0) }}</div>
             <p class="metric-label">Requieren despacho inmediato</p>
         </div>
 
         <div class="metric-card">
-            <h3>🏭 Plantas Activas</h3>
+            <h3> Plantas Activas</h3>
             <div class="metric-value">{{ metrics.plantas_activas|default(0) }} <small>/3</small></div>
             <p class="metric-label">LP • CB • SC en operación</p>
         </div>
     </div>
 
-    <!-- SECCIÓN DE ROTACIÓN DE INVENTARIO -->
     <div class="content-section">
-        <h3>📈 Rotación de Inventario (Últimos 6 meses)</h3>
-        
+        <h3> Rotación de Inventario (Últimos 6 meses)</h3>
+
         <div style="padding: var(--spacing-xl); background: rgba(212, 165, 116, 0.02); border-radius: var(--radius-md); border: 1px solid rgba(212, 165, 116, 0.1);">
+
             {% if meses and ventas %}
                 <div style="display: grid; gap: var(--spacing-lg);">
+
                     {% for i in range(meses|length) %}
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <div style="flex: 1; max-width: 150px;">
-                                <strong>{{ meses[i] }}</strong>
-                            </div>
-                            <div style="flex: 1; height: 30px; background: rgba(212, 165, 116, 0.1); border-radius: var(--radius-sm); overflow: hidden; position: relative;">
-                                <div style="height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--primary-light)); width: {{ (ventas[i] / (ventas|max * 1.2)) * 100 }}%; transition: width 0.5s ease;"></div>
-                            </div>
-                            <div style="text-align: right; min-width: 100px; padding-left: var(--spacing-lg);">
-                                <strong>{{ ventas[i] }}</strong> <span style="color: var(--text-muted);">unidades</span>
-                            </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+
+                        <div style="flex: 1; max-width: 150px;">
+                            <strong>{{ meses[i] }}</strong>
                         </div>
+
+                        <div style="flex: 1; height: 30px; background: rgba(212, 165, 116, 0.1); border-radius: var(--radius-sm); overflow: hidden; position: relative;">
+
+                            <div style="
+                                height: 100%;
+                                background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+                                width: {{ (ventas[i] / (max_ventas * 1.2)) * 100 }}%;
+                                transition: width 0.5s ease;
+                            ">
+                            </div>
+
+                        </div>
+
+                        <div style="text-align: right; min-width: 100px; padding-left: var(--spacing-lg);">
+                            <strong>{{ ventas[i] }}</strong>
+                            <span style="color: var(--text-muted);">unidades</span>
+                        </div>
+
+                    </div>
                     {% endfor %}
+
                 </div>
+
             {% else %}
                 <div style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
-                    <p>📊 No hay datos de movimientos en los últimos 6 meses.</p>
+                    <p> No hay datos de movimientos en los últimos 6 meses.</p>
                 </div>
             {% endif %}
+
         </div>
     </div>
 
-    <!-- SECCIÓN DE ACCIONES RÁPIDAS -->
     <div class="content-section">
-        <h3>⚡ Acciones Rápidas</h3>
-        
+        <h3> Acciones Rápidas</h3>
+
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-lg);">
-            <div style="padding: var(--spacing-lg); border: 2px dashed rgba(212, 165, 116, 0.2); border-radius: var(--radius-lg); text-align: center; cursor: pointer; transition: var(--transition); background: rgba(212, 165, 116, 0.02);" onmouseover="this.style.borderColor='var(--primary-color)'; this.style.background='rgba(212, 165, 116, 0.05)';" onmouseout="this.style.borderColor='rgba(212, 165, 116, 0.2)'; this.style.background='rgba(212, 165, 116, 0.02)';">
+
+            <div style="padding: var(--spacing-lg); border: 2px dashed rgba(212, 165, 116, 0.2); border-radius: var(--radius-lg); text-align: center;">
                 <a href="/productos" style="display: block; text-decoration: none; color: inherit;">
                     <div style="font-size: 2rem; margin-bottom: var(--spacing-md);">🍺</div>
-                    <strong style="display: block;">Gestionar Productos</strong>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; margin-top: var(--spacing-sm);">Catálogo de cervezas y presentaciones</p>
+                    <strong>Gestionar Productos</strong>
                 </a>
             </div>
 
-            <div style="padding: var(--spacing-lg); border: 2px dashed rgba(212, 165, 116, 0.2); border-radius: var(--radius-lg); text-align: center; cursor: pointer; transition: var(--transition); background: rgba(212, 165, 116, 0.02);" onmouseover="this.style.borderColor='var(--primary-color)'; this.style.background='rgba(212, 165, 116, 0.05)';" onmouseout="this.style.borderColor='rgba(212, 165, 116, 0.2)'; this.style.background='rgba(212, 165, 116, 0.02)';">
+            <div style="padding: var(--spacing-lg); border: 2px dashed rgba(212, 165, 116, 0.2); border-radius: var(--radius-lg); text-align: center;">
                 <a href="/inventario" style="display: block; text-decoration: none; color: inherit;">
                     <div style="font-size: 2rem; margin-bottom: var(--spacing-md);">🗄️</div>
-                    <strong style="display: block;">Control de Inventario</strong>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; margin-top: var(--spacing-sm);">Registros de almacén</p>
+                    <strong>Control de Inventario</strong>
                 </a>
             </div>
 
-            <div style="padding: var(--spacing-lg); border: 2px dashed rgba(212, 165, 116, 0.2); border-radius: var(--radius-lg); text-align: center; cursor: pointer; transition: var(--transition); background: rgba(212, 165, 116, 0.02);" onmouseover="this.style.borderColor='var(--primary-color)'; this.style.background='rgba(212, 165, 116, 0.05)';" onmouseout="this.style.borderColor='rgba(212, 165, 116, 0.2)'; this.style.background='rgba(212, 165, 116, 0.02)';">
+            <div style="padding: var(--spacing-lg); border: 2px dashed rgba(212, 165, 116, 0.2); border-radius: var(--radius-lg); text-align: center;">
                 <a href="/distribuidores" style="display: block; text-decoration: none; color: inherit;">
                     <div style="font-size: 2rem; margin-bottom: var(--spacing-md);">🚚</div>
-                    <strong style="display: block;">Distribuidores</strong>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; margin-top: var(--spacing-sm);">Gestión de pedidos</p>
+                    <strong>Distribuidores</strong>
                 </a>
             </div>
 
-            <div style="padding: var(--spacing-lg); border: 2px dashed rgba(212, 165, 116, 0.2); border-radius: var(--radius-lg); text-align: center; cursor: pointer; transition: var(--transition); background: rgba(212, 165, 116, 0.02);" onmouseover="this.style.borderColor='var(--primary-color)'; this.style.background='rgba(212, 165, 116, 0.05)';" onmouseout="this.style.borderColor='rgba(212, 165, 116, 0.2)'; this.style.background='rgba(212, 165, 116, 0.02)';">
+            <div style="padding: var(--spacing-lg); border: 2px dashed rgba(212, 165, 116, 0.2); border-radius: var(--radius-lg); text-align: center;">
                 <a href="/reportes" style="display: block; text-decoration: none; color: inherit;">
                     <div style="font-size: 2rem; margin-bottom: var(--spacing-md);">📈</div>
-                    <strong style="display: block;">Reportes</strong>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; margin-top: var(--spacing-sm);">Análisis gerenciales</p>
+                    <strong>Reportes</strong>
                 </a>
             </div>
+
         </div>
     </div>
 
-    <!-- INFORMACIÓN DEL SISTEMA -->
     <div class="content-section">
-        <h3>ℹ️ Información del Sistema</h3>
-        
+        <h3>ℹInformación del Sistema</h3>
+
         <div style="display: grid; gap: var(--spacing-lg);">
+
             <div style="display: flex; justify-content: space-between; padding: var(--spacing-md); background: rgba(212, 165, 116, 0.02); border-radius: var(--radius-md); border-left: 3px solid var(--primary-color);">
-                <span>📅 Última actualización:</span>
-                <strong id="last-update">2026-06-05 17:39:44</strong>
+                <span> Última actualización:</span>
+                <strong id="last-update"></strong>
             </div>
-            
+
             <div style="display: flex; justify-content: space-between; padding: var(--spacing-md); background: rgba(212, 165, 116, 0.02); border-radius: var(--radius-md); border-left: 3px solid var(--primary-color);">
-                <span>👤 Usuario activo:</span>
+                <span> Usuario activo:</span>
                 <strong>{{ username }}</strong>
             </div>
-            
+
             <div style="display: flex; justify-content: space-between; padding: var(--spacing-md); background: rgba(212, 165, 116, 0.02); border-radius: var(--radius-md); border-left: 3px solid var(--primary-color);">
-                <span>🔑 Rol de acceso:</span>
+                <span> Rol de acceso:</span>
                 <strong>{{ rol|capitalize }}</strong>
             </div>
+
         </div>
     </div>
 {% endblock %}
 
 {% block extra_js %}
-    <script>
-        // Actualizar hora del sistema en tiempo real
-        function updateSystemTime() {
-            const now = new Date();
-            const formattedTime = now.toLocaleString('es-BO');
-            document.getElementById('system-time').textContent = formattedTime;
-        }
-        
-        updateSystemTime();
-        setInterval(updateSystemTime, 1000);
+<script>
+    const now = new Date();
 
-        // Actualizar última actualización
-        const now = new Date();
-        document.getElementById('last-update').textContent = now.toLocaleString('es-BO');
-    </script>
+    const lastUpdate = document.getElementById('last-update');
+    if (lastUpdate) {
+        lastUpdate.textContent = now.toLocaleString('es-BO');
+    }
+
+    const systemTime = document.getElementById('system-time');
+    if (systemTime) {
+        setInterval(() => {
+            systemTime.textContent = new Date().toLocaleString('es-BO');
+        }, 1000);
+    }
+</script>
 {% endblock %}

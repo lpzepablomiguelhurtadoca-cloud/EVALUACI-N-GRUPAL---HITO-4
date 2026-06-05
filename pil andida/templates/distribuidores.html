@@ -4,17 +4,17 @@
 
 {% block content %}
     <div class="breadcrumb">
-        <span>🚚</span>
+        <span></span>
         <span><a href="/dashboard">Dashboard</a></span>
         <span>/</span>
         <span style="color: var(--text-muted);">Distribuidores & Pedidos</span>
     </div>
 
-    <h2 style="margin-bottom: var(--spacing-2xl);">🚚 Panel de Distribuidores y Pedidos</h2>
+    <h2 style="margin-bottom: var(--spacing-2xl);"> Panel de Distribuidores y Pedidos</h2>
 
     <!-- SECCIÓN DE CREAR PEDIDO -->
     <div class="content-section">
-        <h3>➕ Crear Nueva Orden de Pedido</h3>
+        <h3> Crear Nueva Orden de Pedido</h3>
         
         <form action="/distribuidores/crear" method="POST">
             <div class="form-row">
@@ -61,14 +61,14 @@
                 </div>
             </fieldset>
 
-            <button type="submit" class="btn btn-primary">✅ Confirmar Pedido</button>
+            <button type="submit" class="btn btn-primary"> Confirmar Pedido</button>
         </form>
     </div>
 
     <!-- TABLA DE PEDIDOS -->
     <div class="content-section">
-        <h3>📋 Seguimiento de Órdenes de Pedido</h3>
-        
+        <h3> Seguimiento de Órdenes de Pedido</h3>
+    
         <div class="filter-bar">
             <input type="text" placeholder="🔍 Buscar pedido..." id="search-pedidos">
             <select id="filter-estado">
@@ -104,13 +104,13 @@
                                 <td><strong>{{ p.monto_total }} Bs</strong></td>
                                 <td>
                                     {% if p.estado == 'Pendiente' %}
-                                        <span class="badge" style="background-color: var(--warning); color: white;">⏳ Pendiente</span>
+                                        <span class="badge" style="background-color: var(--warning); color: white;"> Pendiente</span>
                                     {% elif p.estado == 'Despachado' %}
-                                        <span class="badge" style="background-color: var(--info); color: white;">🚚 Despachado</span>
+                                        <span class="badge" style="background-color: var(--info); color: white;"> Despachado</span>
                                     {% elif p.estado == 'Entregado' %}
-                                        <span class="badge" style="background-color: var(--success); color: white;">✅ Entregado</span>
+                                        <span class="badge" style="background-color: var(--success); color: white;"> Entregado</span>
                                     {% else %}
-                                        <span class="badge" style="background-color: var(--danger); color: white;">❌ Cancelado</span>
+                                        <span class="badge" style="background-color: var(--danger); color: white;"> Cancelado</span>
                                     {% endif %}
                                 </td>
                                 <td>
@@ -126,7 +126,7 @@
                     {% else %}
                         <tr>
                             <td colspan="7" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
-                                🚚 No hay pedidos registrados
+                                 No hay pedidos registrados
                             </td>
                         </tr>
                     {% endif %}

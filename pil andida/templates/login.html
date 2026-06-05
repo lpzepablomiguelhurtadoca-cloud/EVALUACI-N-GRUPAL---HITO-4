@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIL Andina - Sistema de Inventario y Distribución</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
+</head>
+</head>
+<body>
+    <main>
+        <section id="login-container">
+            <header>
+                <img src="logo-pil.png" alt="Logo PIL Andina / Cervecería Boliviana">
+                <h1>Sistema de Gestión de Inventario</h1>
+                <p>Acceso al Panel de Control Regional</p>
+            </header>
+
+            <form action="/login" method="POST">
+                <div class="form-group">
+                    <label for="username">Usuario / Correo Electrónico:</label>
+                    <input type="text" id="username" name="username" required placeholder="Ej: admin_lapaz">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" name="password" required placeholder="********">
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Seleccione su Rol Asignado:</label>
+                    <select id="role" name="role" required>
+                        <option value="" disabled selected>-- Seleccione un Rol --</option>
+                        <option value="Administrador">Administrador del Sistema (DBA/Soporte)</option>
+                        <option value="Gerente">Gerente de Planta / Reportes Gerenciales</option>
+                        <option value="Distribuidor">Distribuidor Autorizado (Pedidos/Stock)</option>
+                    </select>
+                </div>
+
+                <button type="submit">Ingresar al Sistema</button>
+            </form>
+
+            <footer>
+                <p>&copy; 2026 PIL Andina S.A. - Cervecería Boliviana. Todos los derechos reservados.</p>
+            </footer>
+        </section>
+    </main>
+</body>
+</html>

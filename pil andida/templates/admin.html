@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración y Seguridad - PIL Andina</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
+</head>
+</head>
+<body>
+    <div id="dashboard-layout">
+        <main id="main-content">
+            <h2>🔐 Panel de Control Técnico y Seguridad de Base de Datos</h2>
+            <p>Herramientas exclusivas para el rol de **DBA / Administrador** del sistema.</p>
+            <hr>
+
+            <div class="grid-container-admin">
+                <section class="admin-card">
+                    <h3>🗄️ Respaldo y Restauración de Base de Datos (MySQL)</h3>
+                    <p>Ejecuta o programa volcados completos de las tablas del esquema operativo.</p>
+                    
+                    <div class="admin-actions">
+                        <form action="/admin/backup/crear" method="POST">
+                            <button type="submit" class="btn-primary">⚡ Generar Backup Inmediato (.SQL)</button>
+                        </form>
+                    </div>
+
+                    <h4>Copias Disponibles en Servidor</h4>
+                    <table class="mini-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre del Archivo</th>
+                                <th>Fecha de Creación</th>
+                                <th>Tamaño</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>pil_andina_backup_20260605.sql</td>
+                                <td>Hoy 08:00 AM</td>
+                                <td>4.2 MB</td>
+                                <td><button class="btn-restore">🔄 Restaurar</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section class="admin-card">
+                    <h3>📈 Monitoreo de Conexiones y Consultas Lentas</h3>
+                    <p>Estado del pool de conexiones activas hacia MySQL en tiempo real.</p>
+                    
+                    <div class="status-monitor">
+                        <p>Estado de la Base de Datos: <strong style="color: #2a9d8f;">CONECTADO (ONLINE)</strong></p>
+                        <p>Hilos/Conexiones del Servidor Activas: <strong>5 Hilos concurrentes</strong></p>
+                    </div>
+
+                    <h4>Últimos Logs de Auditoría del Sistema</h4>
+                    <div class="log-viewer" style="background-color: #111; color: #00ff00; padding: 15px; font-family: monospace; border-radius: 8px; height: 150px; overflow-y: scroll;">
+                        <p>[2026-06-05 14:10:22] USER 'admin_lp' ejecutó PROCEDURE 'InsertarPedido' - Éxito.</p>
+                        <p>[2026-06-05 14:23:05] TRIGGER 'Auditoria_Stock' disparado en tabla 'Inventario_Bodega'.</p>
+                        <p>[2026-06-05 14:55:12] USER 'gerente_sc' exportó ReporteRotacion.csv a local.</p>
+                        <p>[2026-06-05 15:01:44] EXPLAIN ejecutado para optimización de índice en tabla 'Lotes'.</p>
+                    </div>
+                </section>
+            </div>
+
+            <section class="admin-card" style="margin-top: 25px;">
+                <h3>📊 Exportación Masiva de Reportes</h3>
+                <p>Descarga directa de datos consolidados para la toma de decisiones.</p>
+                <div class="export-buttons-group">
+                    <a href="/reportes/exportar/csv" class="btn-export">⬇️ Exportar Stock a CSV</a>
+                    <a href="/reportes/exportar/excel" class="btn-export">⬇️ Exportar Rotación de Inventario (Excel)</a>
+                    <a href="/reportes/proximos-vencer/pdf" class="btn-export" target="_blank">🖨️ Imprimir Productos Próximos a Vencer (PDF)</a>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

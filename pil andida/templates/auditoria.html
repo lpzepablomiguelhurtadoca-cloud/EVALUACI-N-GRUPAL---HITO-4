@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoría del Sistema - PIL Andina</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
+</head>
+</head>
+<body>
+    <div id="dashboard-layout">
+        <main id="main-content">
+            <h2>🕵️‍♂️ Historial de Auditoría y Triggers de Seguridad</h2>
+            <p>Registro automático e imborrable de modificaciones en las tablas de la Base de Datos.</p>
+            <hr>
+
+            <section class="table-section">
+                <h3>Log de Eventos DML Detectados (INSERT, UPDATE, DELETE)</h3>
+                <table class="data-table" style="font-family: monospace; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="background-color: #264653;">
+                            <th>ID Log</th>
+                            <th>Tabla Afectada</th>
+                            <th>Operación</th>
+                            <th>Usuario BD</th>
+                            <th>Descripción del Cambio</th>
+                            <th>Fecha y Hora Exacta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#AUD-8821</td>
+                            <td><strong>Inventario_Bodega</strong></td>
+                            <td><span style="color: #e9c46a; font-weight: bold;">UPDATE</span></td>
+                            <td>admin_lapaz</td>
+                            <td>Se modificó el stock del Lote LOT-PAC-9912 de 25,000 a 24,960 (Merma).</td>
+                            <td>05/06/2026 14:10:22</td>
+                        </tr>
+                        <tr>
+                            <td>#AUD-8822</td>
+                            <td><strong>Pedidos</strong></td>
+                            <td><span style="color: #2a9d8f; font-weight: bold;">INSERT</span></td>
+                            <td>dist_norte_lp</td>
+                            <td>Se registró una nueva orden de compra (#PED-0045) por un monto de 14,200 Bs.</td>
+                            <td>05/06/2026 14:23:05</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

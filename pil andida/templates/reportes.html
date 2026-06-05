@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes Gerenciales - PIL Andina</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
+</head>
+</head>
+<body>
+    <div id="dashboard-layout">
+        <main id="main-content">
+            <h2>📈 Panel de Reportes Estadísticos y Gerenciales</h2>
+            <p>Consultas consolidadas para la toma de decisiones estratégicas de distribución.</p>
+            <hr>
+
+            <section class="form-section">
+                <h3>Filtrar Reporte de Rotación y Ventas</h3>
+                <form action="/reportes/consultar" method="GET">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fecha_inicio">Fecha Inicial:</label>
+                            <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_fin">Fecha Final:</label>
+                            <input type="date" id="fecha_fin" name="fecha_fin" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="filtro_producto">Producto Específico:</label>
+                            <select id="filtro_producto" name="filtro_producto">
+                                <option value="todos">-- Todos los Productos --</option>
+                                <option value="1">Paceña Centenario 620ml</option>
+                                <option value="2">Huari 355ml</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">📊 Generar Reporte Visual</button>
+                </form>
+            </section>
+
+            <section class="table-section">
+                <h3>Ranking de Productos con Mayor Rotación (Más Demandados)</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Posición</th>
+                            <th>Producto</th>
+                            <th>Unidades Despachadas</th>
+                            <th>Total Recaudado (Bs)</th>
+                            <th>Planta con Mayor Salida</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1️⃣</td>
+                            <td><strong>Paceña Centenario 620ml</strong></td>
+                            <td>85,400 u.</td>
+                            <td>1,024,800 Bs</td>
+                            <td>La Paz</td>
+                        </tr>
+                        <tr>
+                            <td>2️⃣</td>
+                            <td><strong>Huari Tradicional 355ml</strong></td>
+                            <td>32,100 u.</td>
+                            <td>449,400 Bs</td>
+                            <td>Oruro / Santa Cruz</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

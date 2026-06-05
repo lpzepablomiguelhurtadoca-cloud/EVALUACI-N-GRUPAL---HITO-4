@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Distribuidores y Pedidos - PIL Andina</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
+</head>
+</head>
+<body>
+    <div id="dashboard-layout">
+        <main id="main-content">
+            <h2>🚚 Panel de Distribuidores y Pedidos Realizados</h2>
+            <hr>
+
+            <section class="form-section">
+                <h3>Crear Nueva Orden de Pedido</h3>
+                <form action="/pedidos/crear" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="distribuidor_id">Distribuidor / Razón Social:</label>
+                            <select id="distribuidor_id" name="distribuidor_id" required>
+                                <option value="1">Distribuidora Norte S.R.L. (La Paz)</option>
+                                <option value="2">Comercial El Cristo (Santa Cruz)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_entrega">Fecha de Entrega Requerida:</label>
+                            <input type="date" id="fecha_entrega" name="fecha_entrega" required>
+                        </div>
+                    </div>
+
+                    <fieldset class="calidad-box">
+                        <legend>🛒 Items del Pedido</legend>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label Lothar="item_producto">Producto:</label>
+                                <select id="item_producto" name="item_producto">
+                                    <option value="1">Paceña 620ml</option>
+                                    <option value="2">Huari 355ml</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="item_cantidad">Cantidad (Cajas):</label>
+                                <input type="number" id="item_cantidad" name="item_cantidad" min="1">
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <button type="submit" class="btn-primary">Confirmar y Emitir Pedido</button>
+                </form>
+            </section>
+
+            <section class="table-section">
+                <h3>Seguimiento de Órdenes en Tiempo Real</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Distribuidor</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Monto Total</th>
+                            <th>Estado Actual</th>
+                            <th>Acción Operativa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#PED-0045</td>
+                            <td>Distribuidora Norte S.R.L.</td>
+                            <td>05/06/2026</td>
+                            <td>14,200 Bs</td>
+                            <td><span class="badge-pending">⏳ Pendiente</span></td>
+                            <td>
+                                <form action="/pedidos/despachar/45" method="POST" style="display:inline;">
+                                    <button class="btn-edit">🚀 Despachar Lote</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

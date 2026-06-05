@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Inventario - PIL Andina</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
+</head>
+</head>
+<body>
+    <div id="dashboard-layout">
+        <main id="main-content">
+            <h2>🗄️ Control y Ajustes de Inventario en Bodegas</h2>
+            <hr>
+
+            <section id="alerts-section">
+                <div class="alert-box-danger">
+                    <strong>⚠️ ALERTA DE STOCK MÍNIMO:</strong> El producto <em>Huari 355ml</em> en la <em>Planta Santa Cruz (Bodega 2)</em> ha caído por debajo del umbral mínimo configurado (50 cajas). Stock actual: <strong>12 cajas</strong>.
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h3>Registrar Ajuste de Inventario (Merma / Rotura de Botellas)</h3>
+                <form action="/inventario/ajuste" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="lote_ajuste">Lote de Producción Afectado:</label>
+                            <select id="lote_ajuste" name="lote_ajuste" required>
+                                <option value="LOT-PAC-9912">LOT-PAC-9912 (Paceña 620ml - LP)</option>
+                                <option value="LOT-HUA-3421">LOT-HUA-3421 (Huari 355ml - SC)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="tipo_movimiento">Tipo de Ajuste:</label>
+                            <select id="tipo_movimiento" name="tipo_movimiento" required>
+                                <option value="Merma por Transporte">Merma por Transporte (Rotura)</option>
+                                <option value="Falla de Envasado">Falla de Envasado (Calidad)</option>
+                                <option value="Ajuste de Auditoría">Ajuste Manual por Inventario Físico</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cantidad_ajuste">Cantidad de Unidades a Descontar:</label>
+                            <input type="number" id="cantidad_ajuste" name="cantidad_ajuste" min="1" placeholder="Ej: 24" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="autorizado_por">Autorizado por (Firma/Código):</label>
+                            <input type="text" id="autorizado_por" name="autorizado_por" placeholder="Ej: Supervisor de Turno" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-danger">Aplicar Descuento de Stock</button>
+                </form>
+            </section>
+
+            <section class="table-section">
+                <h3>Estado del Stock en Tiempo Real (Vista Consolidada)</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Planta</th>
+                            <th>Bodega / Ubicación</th>
+                            <th>Producto</th>
+                            <th>Código Lote</th>
+                            <th>Stock Disponible</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>La Paz</td>
+                            <td>Bodega Principal - Pasillo 1</td>
+                            <td>Paceña Centenario 620ml</td>
+                            <td>LOT-PAC-9912</td>
+                            <td><strong>24,960 u.</strong></td>
+                            <td><span class="status-ok">Óptimo</span></td>
+                        </tr>
+                        <tr style="background-color: rgba(231, 111, 81, 0.2);">
+                            <td>Santa Cruz</td>
+                            <td>Bodega 2 - Refrigerado</td>
+                            <td>Huari Tradicional 355ml</td>
+                            <td>LOT-HUA-3421</td>
+                            <td><strong>288 u.</strong></td>
+                            <td><span class="status-critical">Crítico (Reabastecer)</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

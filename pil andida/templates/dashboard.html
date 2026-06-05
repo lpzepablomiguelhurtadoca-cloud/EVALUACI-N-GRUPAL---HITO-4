@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard General - PIL Andina</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
+</head>
+<body>
+    <div id="dashboard-layout">
+        
+        <aside id="sidebar">
+            <div class="sidebar-brand">
+                <h2>PIL ANDINA</h2>
+                <small>Cervecería Boliviana</small>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/dashboard" class="active">📊 Dashboard Inicio</a></li>
+                    <li><a href="/productos">🍺 Gestión Productos</a></li>
+                    <li><a href="/plantas">🏭 Plantas y Bodegas</a></li>
+                    <li><a href="/lotes">📦 Lotes de Producción</a></li>
+                    <li><a href="/inventario">🗄️ Control Inventarios</a></li>
+                    <li><a href="/distribuidores">🚚 Distribuidores y Pedidos</a></li>
+                    <li><a href="/reportes">📈 Reportes Gerenciales</a></li>
+                    <li><a href="/admin">🔐 Administración y Backups</a></li>
+                    <li><a href="/logout" style="color: #ff4d4d;">🚪 Cerrar Sesión</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main id="main-content">
+            <header id="top-bar">
+                <div class="user-info">
+                    <p>Bienvenido: <strong>Leonardo Apaza</strong> <span class="badge">Rol: Administrador</span></p>
+                </div>
+                <div class="system-time">
+                    <p>Planta Actual: <strong>La Paz (Mecapaca)</strong></p>
+                </div>
+            </header>
+
+            <section id="metrics-grid">
+                <div class="metric-card">
+                    <h3>Stock Consolidado</h3>
+                    <p class="number">145,200 <small>u.</small></p>
+                    <span class="trend positive">▲ 4% este mes</span>
+                </div>
+                <div class="metric-card alert">
+                    <h3>Alertas de Vencimiento</h3>
+                    <p class="number">3</p>
+                    <span class="trend negative">⚠️ Lotes próximos a vencer</span>
+                </div>
+                <div class="metric-card">
+                    <h3>Pedidos Pendientes</h3>
+                    <p class="number">12</p>
+                    <span class="trend warning">🚚 Requieren despacho inmediato</span>
+                </div>
+                <div class="metric-card">
+                    <h3>Plantas Activas</h3>
+                    <p class="number">3 / 3</p>
+                    <span class="trend static">LP - CB - SC</span>
+                </div>
+            </section>
+
+            <section id="charts-container">
+                <div class="chart-box">
+                    <h3>Rotación de Inventario (Mes Actual vs Anterior)</h3>
+                    <div class="mock-chart">[Gráfico de Barras: Paceña, Huari, Taquiña]</div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

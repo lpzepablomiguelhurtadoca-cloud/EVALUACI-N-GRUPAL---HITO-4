@@ -6,12 +6,11 @@
     <title>PIL Andina - Sistema de Inventario y Distribución</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
 </head>
-</head>
 <body>
     <main>
         <section id="login-container">
             <header>
-                <img src="logo-pil.png" alt="Logo PIL Andina / Cervecería Boliviana">
+                <img src="{{ url_for('static', filename='logo-pil.png') }}" alt="Logo PIL Andina / Cervecería Boliviana">
                 <h1>Sistema de Gestión de Inventario</h1>
                 <p>Acceso al Panel de Control Regional</p>
             </header>
@@ -19,7 +18,7 @@
             <form action="/login" method="POST">
                 <div class="form-group">
                     <label for="username">Usuario / Correo Electrónico:</label>
-                    <input type="text" id="username" name="username" required placeholder="Ej: admin_lapaz">
+                    <input type="text" id="username" name="username" required placeholder="Ej: admin">
                 </div>
 
                 <div class="form-group">
@@ -27,15 +26,15 @@
                     <input type="password" id="password" name="password" required placeholder="********">
                 </div>
 
-                <div class="form-group">
-                    <label for="role">Seleccione su Rol Asignado:</label>
-                    <select id="role" name="role" required>
-                        <option value="" disabled selected>-- Seleccione un Rol --</option>
-                        <option value="Administrador">Administrador del Sistema (DBA/Soporte)</option>
-                        <option value="Gerente">Gerente de Planta / Reportes Gerenciales</option>
-                        <option value="Distribuidor">Distribuidor Autorizado (Pedidos/Stock)</option>
-                    </select>
-                </div>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}" style="background: #e63946; color: white; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
 
                 <button type="submit">Ingresar al Sistema</button>
             </form>

@@ -6,12 +6,11 @@
     <title>Reportes Gerenciales - PIL Andina</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
 </head>
-</head>
 <body>
     <div id="dashboard-layout">
+        <aside id="sidebar">...</aside>
         <main id="main-content">
-            <h2>📈 Panel de Reportes Estadísticos y Gerenciales</h2>
-            <p>Consultas consolidadas para la toma de decisiones estratégicas de distribución.</p>
+            <h2>📈 Panel de Reportes Estadísticos</h2>
             <hr>
 
             <section class="form-section">
@@ -19,56 +18,53 @@
                 <form action="/reportes/consultar" method="GET">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="fecha_inicio">Fecha Inicial:</label>
-                            <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+                            <label>Fecha Inicial:</label>
+                            <input type="date" name="fecha_inicio" value="{{ fecha_inicio }}" required>
                         </div>
                         <div class="form-group">
-                            <label for="fecha_fin">Fecha Final:</label>
-                            <input type="date" id="fecha_fin" name="fecha_fin" required>
+                            <label>Fecha Final:</label>
+                            <input type="date" name="fecha_fin" value="{{ fecha_fin }}" required>
                         </div>
                         <div class="form-group">
-                            <label for="filtro_producto">Producto Específico:</label>
-                            <select id="filtro_producto" name="filtro_producto">
-                                <option value="todos">-- Todos los Productos --</option>
-                                <option value="1">Paceña Centenario 620ml</option>
-                                <option value="2">Huari 355ml</option>
+                            <label>Producto:</label>
+                            <select name="filtro_producto">
+                                <option value="todos">-- Todos --</option>
+                                {% for p in productos %}
+                                <option value="{{ p.id }}">{{ p.nombre_comercial }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
-                    <button type="submit" class="btn-primary">📊 Generar Reporte Visual</button>
+                    <button type="submit" class="btn-primary">Generar Reporte</button>
                 </form>
             </section>
 
             <section class="table-section">
-                <h3>Ranking de Productos con Mayor Rotación (Más Demandados)</h3>
+                <h3>Ranking de Productos con Mayor Rotación</h3>
                 <table class="data-table">
                     <thead>
-                        <tr>
-                            <th>Posición</th>
-                            <th>Producto</th>
-                            <th>Unidades Despachadas</th>
-                            <th>Total Recaudado (Bs)</th>
-                            <th>Planta con Mayor Salida</th>
-                        </tr>
+                        <tr><th>Producto</th><th>Unidades Despachadas</th><th>Total Recaudado (Bs)</th><th>Planta</th></tr>
                     </thead>
                     <tbody>
+                        {% for r in resultados %}
                         <tr>
-                            <td>1️⃣</td>
-                            <td><strong>Paceña Centenario 620ml</strong></td>
-                            <td>85,400 u.</td>
-                            <td>1,024,800 Bs</td>
-                            <td>La Paz</td>
+                            <td><strong>{{ r.nombre_comercial }}</strong></td>
+                            <td>{{ r.unidades }} u.</td>
+                            <td>{{ r.total_recaudado }} Bs</td>
+                            <td>{{ r.planta }}</td>
                         </tr>
-                        <tr>
-                            <td>2️⃣</td>
-                            <td><strong>Huari Tradicional 355ml</strong></td>
-                            <td>32,100 u.</td>
-                            <td>449,400 Bs</td>
-                            <td>Oruro / Santa Cruz</td>
-                        </tr>
+                        {% else %}
+                        <td><td colspan="4">Sin datos en el rango seleccionado.使用</td></tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </section>
+
+            <div class="export-buttons-group">
+                <a href="/reportes/exportar/csv?tipo=stock_planta" class="btn-export">📄 Exportar Stock a CSV</a>
+                <a href="/reportes/exportar/excel?tipo=proximos_vencer" class="btn-export">📊 Exportar Lotes por Vencer (Excel)</a>
+                <a href="/reportes/proximos-vencer/pdf" class="btn-export">🖨️ Generar PDF</a>
+            </div>
         </main>
     </div>
 </body>

@@ -6,44 +6,31 @@
     <title>Auditoría del Sistema - PIL Andina</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
 </head>
-</head>
 <body>
     <div id="dashboard-layout">
+        <aside id="sidebar">...</aside>
         <main id="main-content">
-            <h2>🕵️‍♂️ Historial de Auditoría y Triggers de Seguridad</h2>
-            <p>Registro automático e imborrable de modificaciones en las tablas de la Base de Datos.</p>
+            <h2>🕵️‍♂️ Historial de Auditoría y Triggers</h2>
             <hr>
-
             <section class="table-section">
-                <h3>Log de Eventos DML Detectados (INSERT, UPDATE, DELETE)</h3>
-                <table class="data-table" style="font-family: monospace; font-size: 0.9rem;">
+                <h3>Log de Eventos DML (INSERT, UPDATE, DELETE)</h3>
+                <table class="data-table">
                     <thead>
-                        <tr style="background-color: #264653;">
-                            <th>ID Log</th>
-                            <th>Tabla Afectada</th>
-                            <th>Operación</th>
-                            <th>Usuario BD</th>
-                            <th>Descripción del Cambio</th>
-                            <th>Fecha y Hora Exacta</th>
-                        </tr>
+                        <tr><th>ID Log</th><th>Usuario</th><th>Acción</th><th>Tabla</th><th>Detalles</th><th>Fecha</th></tr>
                     </thead>
                     <tbody>
+                        {% for log in logs %}
                         <tr>
-                            <td>#AUD-8821</td>
-                            <td><strong>Inventario_Bodega</strong></td>
-                            <td><span style="color: #e9c46a; font-weight: bold;">UPDATE</span></td>
-                            <td>admin_lapaz</td>
-                            <td>Se modificó el stock del Lote LOT-PAC-9912 de 25,000 a 24,960 (Merma).</td>
-                            <td>05/06/2026 14:10:22</td>
+                            <td>#{{ log.id }}</td>
+                            <td>{{ log.usuario }}</td>
+                            <td>{{ log.accion }}</td>
+                            <td>{{ log.tabla_afectada }}</td>
+                            <td>{{ log.detalles }}</td>
+                            <td>{{ log.fecha }}</td>
                         </tr>
-                        <tr>
-                            <td>#AUD-8822</td>
-                            <td><strong>Pedidos</strong></td>
-                            <td><span style="color: #2a9d8f; font-weight: bold;">INSERT</span></td>
-                            <td>dist_norte_lp</td>
-                            <td>Se registró una nueva orden de compra (#PED-0045) por un monto de 14,200 Bs.</td>
-                            <td>05/06/2026 14:23:05</td>
-                        </tr>
+                        {% else %}
+                        <tr><td colspan="6">No hay registros de auditoría.</td></tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </section>

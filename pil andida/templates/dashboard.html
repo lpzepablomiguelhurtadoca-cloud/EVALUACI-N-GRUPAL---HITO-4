@@ -8,7 +8,6 @@
 </head>
 <body>
     <div id="dashboard-layout">
-        
         <aside id="sidebar">
             <div class="sidebar-brand">
                 <h2>PIL ANDINA</h2>
@@ -18,7 +17,7 @@
                 <ul>
                     <li><a href="/dashboard" class="active">📊 Dashboard Inicio</a></li>
                     <li><a href="/productos">🍺 Gestión Productos</a></li>
-                    <li><a href="/plantas">🏭 Plantas y Bodegas</a></li>
+                    <li><a href="/bodegas">🏭 Plantas y Bodegas</a></li>
                     <li><a href="/lotes">📦 Lotes de Producción</a></li>
                     <li><a href="/inventario">🗄️ Control Inventarios</a></li>
                     <li><a href="/distribuidores">🚚 Distribuidores y Pedidos</a></li>
@@ -32,7 +31,7 @@
         <main id="main-content">
             <header id="top-bar">
                 <div class="user-info">
-                    <p>Bienvenido: <strong>Leonardo Apaza</strong> <span class="badge">Rol: Administrador</span></p>
+                    <p>Bienvenido: <strong>{{ username }}</strong> <span class="badge">Rol: {{ rol|capitalize }}</span></p>
                 </div>
                 <div class="system-time">
                     <p>Planta Actual: <strong>La Paz (Mecapaca)</strong></p>
@@ -42,30 +41,40 @@
             <section id="metrics-grid">
                 <div class="metric-card">
                     <h3>Stock Consolidado</h3>
-                    <p class="number">145,200 <small>u.</small></p>
-                    <span class="trend positive">▲ 4% este mes</span>
+                    <p class="number">{{ metrics.total_unidades|default(0) }} <small>u.</small></p>
+                    <span class="trend positive">Actualizado</span>
                 </div>
                 <div class="metric-card alert">
                     <h3>Alertas de Vencimiento</h3>
-                    <p class="number">3</p>
+                    <p class="number">{{ metrics.lotes_por_vencer|default(0) }}</p>
                     <span class="trend negative">⚠️ Lotes próximos a vencer</span>
                 </div>
                 <div class="metric-card">
                     <h3>Pedidos Pendientes</h3>
-                    <p class="number">12</p>
+                    <p class="number">{{ metrics.pedidos_pendientes|default(0) }}</p>
                     <span class="trend warning">🚚 Requieren despacho inmediato</span>
                 </div>
                 <div class="metric-card">
                     <h3>Plantas Activas</h3>
-                    <p class="number">3 / 3</p>
+                    <p class="number">{{ metrics.plantas_activas|default(0) }} / 3</p>
                     <span class="trend static">LP - CB - SC</span>
                 </div>
             </section>
 
             <section id="charts-container">
                 <div class="chart-box">
-                    <h3>Rotación de Inventario (Mes Actual vs Anterior)</h3>
-                    <div class="mock-chart">[Gráfico de Barras: Paceña, Huari, Taquiña]</div>
+                    <h3>Rotación de Inventario (Últimos 6 meses)</h3>
+                    <div class="mock-chart">
+                        {% if meses and ventas %}
+                            <ul>
+                            {% for i in range(meses|length) %}
+                                <li>{{ meses[i] }}: {{ ventas[i] }} unidades vendidas</li>
+                            {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>No hay datos de movimientos en los últimos 6 meses.</p>
+                        {% endif %}
+                    </div>
                 </div>
             </section>
         </main>

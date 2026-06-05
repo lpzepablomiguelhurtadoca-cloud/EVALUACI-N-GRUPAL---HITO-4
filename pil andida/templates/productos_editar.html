@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Productos - PIL Andina</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
+</head>
+<body>
+    <div id="dashboard-layout">
+        <aside id="sidebar">
+            <div class="sidebar-brand">
+                <h2>PIL ANDINA</h2>
+                <small>Cervecería Boliviana</small>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/dashboard">📊 Dashboard Inicio</a></li>
+                    <li><a href="/productos" class="active">🍺 Gestión Productos</a></li>
+                    <li><a href="/bodegas">🏭 Plantas y Bodegas</a></li>
+                    <li><a href="/lotes">📦 Lotes de Producción</a></li>
+                    <li><a href="/inventario">🗄️ Control Inventarios</a></li>
+                    <li><a href="/distribuidores">🚚 Distribuidores y Pedidos</a></li>
+                    <li><a href="/reportes">📈 Reportes Gerenciales</a></li>
+                    <li><a href="/admin">🔐 Administración y Backups</a></li>
+                    <li><a href="/logout" style="color: #ff4d4d;">🚪 Cerrar Sesión</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main id="main-content">
+            <h2>🍺 Catálogo de Productos (Cervecería)</h2>
+            <hr>
+
+            <section class="form-section">
+                <h3>Registrar Nuevo Producto / Presentación</h3>
+                <form action="/productos/guardar" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="codigo_unico">Código Único de Producto:</label>
+                            <input type="text" id="codigo_unico" name="codigo_unico" placeholder="Ej: CER-PAC-620" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nombre_comercial">Nombre Comercial:</label>
+                            <input type="text" id="nombre_comercial" name="nombre_comercial" placeholder="Ej: Paceña Centenario" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tipo_cerveza">Tipo de Cerveza:</label>
+                            <select id="tipo_cerveza" name="tipo_cerveza" required>
+                                <option value="Lager">Lager</option>
+                                <option value="Pilsener">Pilsener</option>
+                                <option value="Malta">Malta</option>
+                                <option value="Negra">Negra</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="presentacion">Presentación:</label>
+                            <select id="presentacion" name="presentacion" required>
+                                <option value="355ml">Botella 355ml</option>
+                                <option value="620ml">Botella 620ml</option>
+                                <option value="1L">Botella Retornable 1 Litro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="graduacion">Graduación Alcohólica (%):</label>
+                            <input type="number" id="graduacion" name="graduacion" step="0.1" placeholder="Ej: 4.8" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="precio">Precio Unitario Actual (Bs):</label>
+                            <input type="number" id="precio" name="precio" step="0.01" placeholder="Ej: 12.50" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-success">Añadir al Catálogo</button>
+                </form>
+            </section>
+
+            <section class="table-section">
+                <h3>Productos en Sistema</h3>
+                <div class="filter-bar">
+                    <input type="text" id="search_input" placeholder="Buscar por nombre o código..." value="{{ search }}">
+                    <button type="button" onclick="window.location.href='/productos?search='+document.getElementById('search_input').value">Filtrar</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Código</th><th>Nombre</th><th>Tipo</th><th>Presentación</th><th>Graduación</th><th>Precio</th><th>Acciones</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for p in productos %}
+                        <tr>
+                            <td><strong>{{ p.codigo_unico }}</strong></td>
+                            <td>{{ p.nombre_comercial }}</td>
+                            <td>{{ p.tipo }}</td>
+                            <td>{{ p.presentacion }}</td>
+                            <td>{{ p.graduacion_alcoholica }}%</td>
+                            <td>{{ p.precio_actual }} Bs</td>
+                            <td>
+                                <a href="/productos/editar/{{ p.id }}" class="btn-edit">Editar</a>
+                                <a href="/productos/eliminar/{{ p.id }}" class="btn-delete" onclick="return confirm('¿Eliminar producto?')">Eliminar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

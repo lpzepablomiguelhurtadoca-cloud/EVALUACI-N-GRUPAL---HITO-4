@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Lote - PIL Andina</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
+</head>
+<body>
+    <div id="dashboard-layout">
+        <main id="main-content">
+            <h2>✏️ Editar Lote</h2>
+            <hr>
+            <section class="form-section">
+                <form action="/lotes/actualizar/{{ lote.id }}" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Número de Lote:</label>
+                            <input type="text" name="nro_lote" value="{{ lote.numero_lote }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Producto:</label>
+                            <select name="producto_id">
+                                {% for p in productos %}
+                                <option value="{{ p.id }}" {% if p.id == lote.producto_id %}selected{% endif %}>{{ p.nombre_comercial }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Fecha Producción:</label>
+                            <input type="date" name="fecha_produccion" value="{{ lote.fecha_produccion }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha Vencimiento:</label>
+                            <input type="date" name="fecha_vencimiento" value="{{ lote.fecha_vencimiento }}" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cantidad:</label>
+                            <input type="number" name="cantidad" value="{{ lote.cantidad_producida }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Planta:</label>
+                            <select name="planta_id">
+                                {% for pl in plantas %}
+                                <option value="{{ pl.id }}" {% if pl.id == lote.planta_id %}selected{% endif %}>{{ pl.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Control Calidad:</label>
+                        <select name="calidad_resultado">
+                            <option value="Aprobado" {% if lote.control_calidad == 'Aprobado' %}selected{% endif %}>Aprobado</option>
+                            <option value="Rechazado" {% if lote.control_calidad == 'Rechazado' %}selected{% endif %}>Rechazado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Técnico:</label>
+                        <input type="text" name="tecnico" value="{{ lote.tecnico_responsable }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Observaciones:</label>
+                        <textarea name="observaciones">{{ lote.observaciones }}</textarea>
+                    </div>
+                    <button type="submit" class="btn-success">Actualizar</button>
+                    <a href="/lotes" class="btn-edit">Cancelar</a>
+                </form>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

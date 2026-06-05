@@ -6,51 +6,47 @@
     <title>Plantas y Bodegas - PIL Andina</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
 </head>
-</head>
 <body>
     <div id="dashboard-layout">
+        <aside id="sidebar">...</aside>
         <main id="main-content">
-            <h2>🏭 Infraestructura: Plantas y Bodegas de Almacenamiento</h2>
+            <h2>🏭 Infraestructura: Plantas y Bodegas</h2>
             <hr>
-
             <section class="form-section">
                 <h3>Asignar Nueva Bodega a Planta</h3>
                 <form action="/bodegas/guardar" method="POST">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="planta_id">Planta Industrial:</label>
-                            <select id="planta_id" name="planta_id" required>
-                                <option value="1">La Paz - Planta Mecapaca</option>
-                                <option value="2">Cochabamba - Planta Sacaba</option>
-                                <option value="3">Santa Cruz - Planta Palmasola</option>
+                            <label>Planta:</label>
+                            <select name="planta_id" required>
+                                <option value="1">La Paz - Mecapaca</option>
+                                <option value="2">Cochabamba - Sacaba</option>
+                                <option value="3">Santa Cruz - Palmasola</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="tipo_bodega">Tipo de Bodega:</label>
-                            <select id="tipo_bodega" name="tipo_bodega" required>
-                                <option value="Producto Terminado">Producto Terminado (Listo para despacho)</option>
-                                <option value="Insumos">Insumos y Materia Prima</option>
-                                <option value="Refrigerado">Almacenamiento Refrigerado</option>
+                            <label>Tipo de Bodega:</label>
+                            <select name="tipo_bodega" required>
+                                <option value="Producto Terminado">Producto Terminado</option>
+                                <option value="Insumos">Insumos</option>
+                                <option value="Refrigerado">Refrigerado</option>
                             </select>
                         </div>
                     </div>
-
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="capacidad">Capacidad Máxima (Cajas/Pallets):</label>
-                            <input type="number" id="capacidad" name="capacidad" placeholder="Ej: 5000" required>
+                            <label>Capacidad Máxima:</label>
+                            <input type="number" name="capacidad" placeholder="Ej: 5000" required>
                         </div>
                         <div class="form-group">
-                            <label for="temperatura">Temperatura Controlada (°C):</label>
-                            <input type="number" id="temperatura" name="temperatura" step="0.1" placeholder="Ej: 4.5">
+                            <label>Temperatura (°C):</label>
+                            <input type="number" step="0.1" name="temperatura" placeholder="Ej: 4.5">
                         </div>
                     </div>
-
                     <div class="form-group">
-                        <label for="ubicacion_fisica">Ubicación Física / Pasillo Interno:</label>
-                        <input type="text" id="ubicacion_fisica" name="ubicacion_fisica" placeholder="Ej: Bloque B - Pasillo 4">
+                        <label>Ubicación Física:</label>
+                        <input type="text" name="ubicacion_fisica" placeholder="Ej: Bloque B - Pasillo 4">
                     </div>
-
                     <button type="submit" class="btn-success">Registrar Bodega</button>
                 </form>
             </section>

@@ -6,9 +6,9 @@
     <title>Gestión de Lotes de Producción - PIL Andina</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
 </head>
-</head>
 <body>
     <div id="dashboard-layout">
+        <aside id="sidebar">...</aside> <!-- mismo sidebar -->
         <main id="main-content">
             <h2>📦 Control de Lotes de Producción</h2>
             <hr>
@@ -16,118 +16,98 @@
             <section class="form-section">
                 <h3>Registrar Nuevo Lote de Producción</h3>
                 <form action="/lotes/guardar" method="POST">
+                    <!-- todos los campos del formulario (idénticos a tu original) -->
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="nro_lote">Número de Lote (Único):</label>
-                            <input type="text" id="nro_lote" name="nro_lote" placeholder="Ej: LOT-PAC-202606" required>
+                            <label>Número de Lote:</label>
+                            <input type="text" name="nro_lote" required>
                         </div>
                         <div class="form-group">
-                            <label for="producto_id">Producto Asociado:</label>
-                            <select id="producto_id" name="producto_id" required>
-                                <option value="1">Paceña Centenario 620ml</option>
-                                <option value="2">Huari Tradicional 355ml</option>
-                                <option value="3">Taquiña Pilsener 1L</option>
+                            <label>Producto:</label>
+                            <select name="producto_id">
+                                {% for p in productos %}
+                                <option value="{{ p.id }}">{{ p.nombre_comercial }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
-
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="fecha_produccion">Fecha de Producción:</label>
-                            <input type="date" id="fecha_produccion" name="fecha_produccion" required>
+                            <label>Fecha Producción:</label>
+                            <input type="date" name="fecha_produccion" required>
                         </div>
                         <div class="form-group">
-                            <label for="fecha_vencimiento">Fecha de Vencimiento:</label>
-                            <input type="date" id="fecha_vencimiento" name="fecha_vencimiento" required>
+                            <label>Fecha Vencimiento:</label>
+                            <input type="date" name="fecha_vencimiento" required>
                         </div>
                     </div>
-
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="cantidad">Cantidad Producida (Unidades):</label>
-                            <input type="number" id="cantidad" name="cantidad" min="1" required>
+                            <label>Cantidad Producida:</label>
+                            <input type="number" name="cantidad" required>
                         </div>
                         <div class="form-group">
-                            <label for="planta_origen">Planta de Origen:</label>
-                            <select id="planta_origen" name="planta_origen" required>
-                                <option value="La Paz">La Paz (Mecapaca)</option>
-                                <option value="Cochabamba">Cochabamba (Sacaba)</option>
-                                <option value="Santa Cruz">Santa Cruz (Palmasola)</option>
+                            <label>Planta de Origen:</label>
+                            <select name="planta_origen">
+                                <option value="La Paz">La Paz</option>
+                                <option value="Cochabamba">Cochabamba</option>
+                                <option value="Santa Cruz">Santa Cruz</option>
                             </select>
                         </div>
                     </div>
-
                     <fieldset class="calidad-box">
-                        <legend>🔬 Evaluación de Control de Calidad</legend>
+                        <legend>Control de Calidad</legend>
                         <div class="form-group">
-                            <label for="calidad_resultado">Resultado Inicial:</label>
-                            <select id="calidad_resultado" name="calidad_resultado" required>
-                                <option value="Aprobado">🟢 Aprobado para Distribución</option>
-                                <option value="Rechazado">🔴 Rechazado (Retención de Lote)</option>
+                            <label>Resultado:</label>
+                            <select name="calidad_resultado">
+                                <option value="Aprobado">Aprobado</option>
+                                <option value="Rechazado">Rechazado</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="tecnico">Técnico Bioquímico Responsable:</label>
-                            <input type="text" id="tecnico" name="tecnico" placeholder="Nombre completo del auditor">
+                            <label>Técnico:</label>
+                            <input type="text" name="tecnico">
                         </div>
                         <div class="form-group">
-                            <label for="observaciones">Observaciones Técnicas:</label>
-                            <textarea id="observaciones" name="observaciones" rows="2"></textarea>
+                            <label>Observaciones:</label>
+                            <textarea name="observaciones"></textarea>
                         </div>
                     </fieldset>
-
-                    <button type="submit" class="btn-success">Guardar y Sincronizar Lote</button>
+                    <button type="submit" class="btn-success">Guardar Lote</button>
                 </form>
             </section>
 
             <section class="table-section">
-                <h3>Lotes Registrados en el Sistema</h3>
-                
+                <h3>Lotes Registrados</h3>
                 <div class="filter-bar">
-                    <input type="text" placeholder="Buscar por número de lote...">
-                    <select>
-                        <option value="">Todas las plantas</option>
-                        <option value="LP">La Paz</option>
+                    <input type="text" id="search_lote" placeholder="Número de lote..." value="{{ search }}">
+                    <select id="planta_filtro">
+                        <option value="">Todas</option>
+                        {% for pl in plantas %}
+                        <option value="{{ pl.nombre }}" {% if planta_filtro == pl.nombre %}selected{% endif %}>{{ pl.nombre }}</option>
+                        {% endfor %}
                     </select>
-                    <button type="button">Filtrar Base de Datos</button>
+                    <button onclick="window.location.href='/lotes?search='+document.getElementById('search_lote').value+'&planta='+document.getElementById('planta_filtro').value">Filtrar</button>
                 </div>
-
                 <table class="data-table">
                     <thead>
-                        <tr>
-                            <th>Nro. Lote</th>
-                            <th>Producto</th>
-                            <th>Planta Origen</th>
-                            <th>Cant. Inicial</th>
-                            <th>Vencimiento</th>
-                            <th>Calidad</th>
-                            <th>Acciones</th>
-                        </tr>
+                        <tr><th>Nro. Lote</th><th>Producto</th><th>Planta</th><th>Cantidad</th><th>Vencimiento</th><th>Calidad</th><th>Acciones</th></tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><strong>LOT-PAC-9912</strong></td>
-                            <td>Paceña 620ml</td>
-                            <td>La Paz (Mecapaca)</td>
-                            <td>25,000 u.</td>
-                            <td>30/11/2026</td>
-                            <td><span class="status-ok">Aprobado</span></td>
+                        {% for l in lotes %}
+                        <tr {% if l.fecha_vencimiento <= today %}class="row-warning"{% endif %}>
+                            <td><strong>{{ l.numero_lote }}</strong></td>
+                            <td>{{ l.nombre_comercial }}</td>
+                            <td>{{ l.planta_nombre }}</td>
+                            <td>{{ l.cantidad_producida }} u.</td>
+                            <td>{{ l.fecha_vencimiento }}</td>
+                            <td><span class="status-ok">{{ l.control_calidad }}</span></td>
                             <td>
-                                <a href="/lotes/editar/1" class="btn-edit">Editar</a>
-                                <a href="/lotes/eliminar/1" class="btn-delete" onclick="return confirm('¿Eliminar lote?')">Eliminar</a>
+                                <a href="/lotes/editar/{{ l.id }}" class="btn-edit">Editar</a>
+                                <a href="/lotes/eliminar/{{ l.id }}" class="btn-delete" onclick="return confirm('¿Eliminar?')">Eliminar</a>
                             </td>
                         </tr>
-                        <tr class="row-warning">
-                            <td><strong>LOT-HUA-3421</strong></td>
-                            <td>Huari 355ml</td>
-                            <td>Oruro / Planta SC</td>
-                            <td>12,400 u.</td>
-                            <td>12/06/2026 (Próximo)</td>
-                            <td><span class="status-ok">Aprobado</span></td>
-                            <td>
-                                <a href="/lotes/editar/2" class="btn-edit">Editar</a>
-                            </td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </section>

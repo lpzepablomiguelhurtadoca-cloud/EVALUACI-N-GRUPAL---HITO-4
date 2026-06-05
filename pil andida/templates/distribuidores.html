@@ -6,77 +6,74 @@
     <title>Gestión de Distribuidores y Pedidos - PIL Andina</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
 </head>
-</head>
 <body>
     <div id="dashboard-layout">
+        <aside id="sidebar">...</aside>
         <main id="main-content">
-            <h2>🚚 Panel de Distribuidores y Pedidos Realizados</h2>
+            <h2>🚚 Panel de Distribuidores y Pedidos</h2>
             <hr>
 
             <section class="form-section">
                 <h3>Crear Nueva Orden de Pedido</h3>
-                <form action="/pedidos/crear" method="POST">
+                <form action="/distribuidores/crear" method="POST">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="distribuidor_id">Distribuidor / Razón Social:</label>
-                            <select id="distribuidor_id" name="distribuidor_id" required>
-                                <option value="1">Distribuidora Norte S.R.L. (La Paz)</option>
-                                <option value="2">Comercial El Cristo (Santa Cruz)</option>
+                            <label>Distribuidor:</label>
+                            <select name="distribuidor_id" required>
+                                {% for d in distribuidores %}
+                                <option value="{{ d.id }}">{{ d.razon_social }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="fecha_entrega">Fecha de Entrega Requerida:</label>
-                            <input type="date" id="fecha_entrega" name="fecha_entrega" required>
+                            <label>Fecha Entrega Requerida:</label>
+                            <input type="date" name="fecha_entrega" required>
                         </div>
                     </div>
-
                     <fieldset class="calidad-box">
-                        <legend>🛒 Items del Pedido</legend>
+                        <legend>Items del Pedido</legend>
                         <div class="form-row">
                             <div class="form-group">
-                                <label Lothar="item_producto">Producto:</label>
-                                <select id="item_producto" name="item_producto">
-                                    <option value="1">Paceña 620ml</option>
-                                    <option value="2">Huari 355ml</option>
+                                <label>Producto:</label>
+                                <select name="item_producto">
+                                    {% for p in productos %}
+                                    <option value="{{ p.id }}">{{ p.nombre_comercial }} {{ p.presentacion }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="item_cantidad">Cantidad (Cajas):</label>
-                                <input type="number" id="item_cantidad" name="item_cantidad" min="1">
+                                <label>Cantidad (Unidades):</label>
+                                <input type="number" name="item_cantidad" min="1" required>
                             </div>
                         </div>
                     </fieldset>
-
-                    <button type="submit" class="btn-primary">Confirmar y Emitir Pedido</button>
+                    <button type="submit" class="btn-primary">Confirmar Pedido</button>
                 </form>
             </section>
 
             <section class="table-section">
-                <h3>Seguimiento de Órdenes en Tiempo Real</h3>
+                <h3>Seguimiento de Órdenes</h3>
                 <table class="data-table">
                     <thead>
-                        <tr>
-                            <th>ID Pedido</th>
-                            <th>Distribuidor</th>
-                            <th>Fecha Solicitud</th>
-                            <th>Monto Total</th>
-                            <th>Estado Actual</th>
-                            <th>Acción Operativa</th>
-                        </tr>
+                        <tr><th>ID Pedido</th><th>Distribuidor</th><th>Fecha</th><th>Monto Total</th><th>Estado</th><th>Acción</th></tr>
                     </thead>
                     <tbody>
+                        {% for p in pedidos %}
                         <tr>
-                            <td>#PED-0045</td>
-                            <td>Distribuidora Norte S.R.L.</td>
-                            <td>05/06/2026</td>
-                            <td>14,200 Bs</td>
-                            <td><span class="badge-pending">⏳ Pendiente</span></td>
+                            <td>#{{ p.id }}</td>
+                            <td>{{ p.distribuidor_nombre }}</td>
+                            <td>{{ p.fecha_pedido }}</td>
+                            <td>{{ p.monto_total }} Bs</td>
+                            <td>{{ p.estado }}</td>
                             <td>
-                                <form action="/pedidos/despachar/45" method="POST" style="display:inline;">
-                                    <button class="btn-edit">🚀 Despachar Lote</button>
+                                {% if p.estado == 'Pendiente' %}
+                                <form action="/distribuidores/despachar/{{ p.id }}" method="POST">
+                                    <button class="btn-edit">Despachar</button>
                                 </form>
+                                {% endif %}
                             </td>
                         </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </section>

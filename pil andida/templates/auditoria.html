@@ -1,40 +1,161 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auditoría del Sistema - PIL Andina</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
-</head>
-<body>
-    <div id="dashboard-layout">
-        <aside id="sidebar">...</aside>
-        <main id="main-content">
-            <h2>🕵️‍♂️ Historial de Auditoría y Triggers</h2>
-            <hr>
-            <section class="table-section">
-                <h3>Log de Eventos DML (INSERT, UPDATE, DELETE)</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr><th>ID Log</th><th>Usuario</th><th>Acción</th><th>Tabla</th><th>Detalles</th><th>Fecha</th></tr>
-                    </thead>
-                    <tbody>
-                        {% for log in logs %}
-                        <tr>
-                            <td>#{{ log.id }}</td>
-                            <td>{{ log.usuario }}</td>
-                            <td>{{ log.accion }}</td>
-                            <td>{{ log.tabla_afectada }}</td>
-                            <td>{{ log.detalles }}</td>
-                            <td>{{ log.fecha }}</td>
-                        </tr>
-                        {% else %}
-                        <tr><td colspan="6">No hay registros de auditoría.</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </section>
-        </main>
+{% extends "base.html" %}
+
+{% block title %}Auditoría del Sistema - PIL Andina{% endblock %}
+
+{% block content %}
+    <div class="breadcrumb">
+        <span>🔍</span>
+        <span><a href="/dashboard">Dashboard</a></span>
+        <span>/</span>
+        <span style="color: var(--text-muted);">Auditoría</span>
     </div>
-</body>
-</html>
+
+    <h2 style="margin-bottom: var(--spacing-lg);">🔍 Historial de Auditoría del Sistema</h2>
+    <p style="color: var(--text-muted); margin-bottom: var(--spacing-2xl);">
+        Registro detallado de todas las operaciones DML (INSERT, UPDATE, DELETE) realizadas en el sistema
+    </p>
+
+    <!-- FILTROS -->
+    <div class="content-section">
+        <h3>🔎 Filtros de Búsqueda</h3>
+        
+        <div class="filter-bar">
+            <input type="text" placeholder="🔍 Buscar usuario o detalles..." id="search-logs">
+            <select id="filter-accion">
+                <option value="">Filtrar por acción...</option>
+                <option value="INSERT">INSERT</option>
+                <option value="UPDATE">UPDATE</option>
+                <option value="DELETE">DELETE</option>
+                <option value="LOGIN">LOGIN</option>
+            </select>
+            <select id="filter-tabla">
+                <option value="">Filtrar por tabla...</option>
+                <option value="usuarios">Usuarios</option>
+                <option value="productos">Productos</option>
+                <option value="lotes">Lotes</option>
+                <option value="inventario">Inventario</option>
+                <option value="pedidos">Pedidos</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- TABLA DE LOGS -->
+    <div class="content-section">
+        <h3>📋 Log de Eventos del Sistema</h3>
+        
+        <div class="table-container">
+            <table class="data-table" id="auditTable">
+                <thead>
+                    <tr>
+                        <th>ID Log</th>
+                        <th>👤 Usuario</th>
+                        <th>⚙️ Acción</th>
+                        <th>📊 Tabla</th>
+                        <th>📝 Detalles</th>
+                        <th>📅 Fecha y Hora</th>
+                        <th>🌐 IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if logs %}
+                        {% for log in logs %}
+                            <tr {% if log.accion == 'DELETE' %}class="row-alert"{% endif %}>
+                                <td><strong>#{{ log.id }}</strong></td>
+                                <td>{{ log.usuario }}</td>
+                                <td>
+                                    {% if log.accion == 'INSERT' %}
+                                        <span class="badge" style="background-color: var(--success); color: white;">➕ INSERT</span>
+                                    {% elif log.accion == 'UPDATE' %}
+                                        <span class="badge" style="background-color: var(--info); color: white;">✏️ UPDATE</span>
+                                    {% elif log.accion == 'DELETE' %}
+                                        <span class="badge" style="background-color: var(--danger); color: white;">🗑️ DELETE</span>
+                                    {% else %}
+                                        <span class="badge" style="background-color: var(--warning); color: white;">{{ log.accion }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ log.tabla_afectada }}</td>
+                                <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ log.detalles }}">
+                                    {{ log.detalles }}
+                                </td>
+                                <td>{{ log.fecha }}</td>
+                                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">{{ log.ip_address }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
+                                🔍 No hay registros de auditoría disponibles
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ESTADÍSTICAS DE AUDITORÍA -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <h3>📊 Total de Eventos</h3>
+            <div class="metric-value">{{ logs|length }}</div>
+            <p class="metric-label">Registrados en el sistema</p>
+        </div>
+
+        <div class="metric-card">
+            <h3>➕ Inserciones</h3>
+            <div class="metric-value">{{ inserciones|default(0) }}</div>
+            <p class="metric-label">Nuevos registros creados</p>
+        </div>
+
+        <div class="metric-card">
+            <h3>✏️ Actualizaciones</h3>
+            <div class="metric-value">{{ actualizaciones|default(0) }}</div>
+            <p class="metric-label">Registros modificados</p>
+        </div>
+
+        <div class="metric-card alert">
+            <h3>🗑️ Eliminaciones</h3>
+            <div class="metric-value">{{ eliminaciones|default(0) }}</div>
+            <p class="metric-label">Registros eliminados</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.getElementById('search-logs').addEventListener('keyup', function(e) {
+            const search = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#auditTable tbody tr');
+            
+            rows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(search) ? '' : 'none';
+            });
+        });
+
+        document.getElementById('filter-accion').addEventListener('change', function(e) {
+            const filter = e.target.value;
+            const rows = document.querySelectorAll('#auditTable tbody tr');
+            
+            rows.forEach(row => {
+                if (filter === '') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = row.innerText.includes(filter) ? '' : 'none';
+                }
+            });
+        });
+
+        document.getElementById('filter-tabla').addEventListener('change', function(e) {
+            const filter = e.target.value;
+            const rows = document.querySelectorAll('#auditTable tbody tr');
+            
+            rows.forEach(row => {
+                if (filter === '') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = row.innerText.includes(filter) ? '' : 'none';
+                }
+            });
+        });
+    </script>
+{% endblock %}

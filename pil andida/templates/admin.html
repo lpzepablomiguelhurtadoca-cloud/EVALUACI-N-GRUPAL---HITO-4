@@ -1,53 +1,206 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración - PIL Andina</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
-</head>
-<body>
-    <div id="dashboard-layout">
-        <aside id="sidebar">...</aside>
-        <main id="main-content">
-            <h2>🔐 Panel de Control Técnico y Seguridad</h2>
-            <hr>
-            <div class="grid-container-admin">
-                <section class="admin-card">
-                    <h3>🗄️ Respaldo y Restauración</h3>
-                    <form action="/admin/backup/crear" method="POST">
-                        <button type="submit" class="btn-primary">⚡ Generar Backup</button>
-                    </form>
-                    <h4>Copias Disponibles</h4>
-                    <table class="mini-table">
-                        <thead><tr><th>Nombre</th><th>Fecha</th><th>Tamaño</th><th>Acción</th></tr></thead>
-                        <tbody>
+{% extends "base.html" %}
+
+{% block title %}Administración del Sistema - PIL Andina{% endblock %}
+
+{% block content %}
+    <div class="breadcrumb">
+        <span>🔐</span>
+        <span><a href="/dashboard">Dashboard</a></span>
+        <span>/</span>
+        <span style="color: var(--text-muted);">Administración</span>
+    </div>
+
+    <h2 style="margin-bottom: var(--spacing-2xl);">🔐 Panel de Control Técnico</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--spacing-xl);">
+        
+        <!-- SECCIÓN DE BACKUP -->
+        <div class="content-section">
+            <h3>🗄️ Respaldo y Restauración de Base de Datos</h3>
+            
+            <form action="/admin/backup/crear" method="POST" style="margin-bottom: var(--spacing-lg);">
+                <p style="margin-bottom: var(--spacing-lg); color: var(--text-muted); font-size: 0.9rem;">
+                    Genere una copia de seguridad de toda la base de datos del sistema.
+                </p>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    ⚡ Generar Backup Ahora
+                </button>
+            </form>
+
+            <h4 style="margin-bottom: var(--spacing-lg);">📂 Copias Disponibles</h4>
+            
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Fecha</th>
+                            <th>Tamaño</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if backups %}
                             {% for b in backups %}
+                                <tr>
+                                    <td><strong>{{ b.nombre }}</strong></td>
+                                    <td>{{ b.fecha }}</td>
+                                    <td>{{ b.tamano }}</td>
+                                    <td>
+                                        <form action="/admin/backup/restaurar/{{ b.nombre }}" method="POST" style="display: inline;" onsubmit="return confirm('¿Restaurar este backup? Esta acción no se puede deshacer.')">
+                                            <button type="submit" class="btn btn-warning btn-small">🔄 Restaurar</button>
+                                        </form>
+                                        <a href="/admin/backup/descargar/{{ b.nombre }}" class="btn btn-secondary btn-small">📥 Descargar</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
                             <tr>
-                                <td>{{ b.nombre }}</td>
-                                <td>{{ b.fecha }}</td>
-                                <td>{{ b.tamano }}</td>
-                                <td>
-                                    <form action="/admin/backup/restaurar/{{ b.nombre }}" method="POST" onsubmit="return confirm('¿Restaurar este backup?')">
-                                        <button type="submit" class="btn-restore">Restaurar</button>
-                                    </form>
+                                <td colspan="4" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
+                                    📂 No hay copias de seguridad disponibles
                                 </td>
                             </tr>
-                            {% else %}
-                            <tr><td colspan="4">No hay backups</td></tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </section>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-                <section class="admin-card">
-                    <h3>📈 Monitoreo de Conexiones</h3>
-                    <div class="status-monitor">
-                        <p>Estado BD: <strong style="color:#2a9d8f;">CONECTADO</strong></p>
-                        <p>Conexiones activas: <strong id="conexiones">--</strong></p>
-                        <button onclick="fetch('/admin/conexiones').then(r=>r.json()).then(d=>document.getElementById('conexiones').innerText=d.conexiones_activas)">Actualizar</button>
-                    </div>
-                    <h4>Últimos Logs de Auditoría</h4>
+        <!-- SECCIÓN DE MONITOREO -->
+        <div class="content-section">
+            <h3>📊 Monitoreo del Sistema</h3>
+            
+            <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
+                <div style="padding: var(--spacing-lg); background: rgba(212, 165, 116, 0.05); border-radius: var(--radius-md); border-left: 3px solid var(--success);">
+                    <p style="margin-bottom: 0.5rem; color: var(--text-muted);">Estado de Base de Datos</p>
+                    <p style="margin: 0; font-size: 1.25rem;"><strong style="color: var(--success);">✅ CONECTADO</strong></p>
+                </div>
+
+                <div style="padding: var(--spacing-lg); background: rgba(212, 165, 116, 0.05); border-radius: var(--radius-md); border-left: 3px solid var(--info);">
+                    <p style="margin-bottom: 0.5rem; color: var(--text-muted);">Conexiones Activas</p>
+                    <p style="margin: 0; font-size: 1.25rem;"><strong id="conexiones">--</strong></p>
+                </div>
+
+                <div style="padding: var(--spacing-lg); background: rgba(212, 165, 116, 0.05); border-radius: var(--radius-md); border-left: 3px solid var(--primary-color);">
+                    <p style="margin-bottom: 0.5rem; color: var(--text-muted);">Espacio en Disco</p>
+                    <p style="margin: 0; font-size: 1.25rem;"><strong id="espacio-disco">--</strong></p>
+                </div>
+
+                <button type="button" class="btn btn-secondary" onclick="actualizarEstadoSistema()">🔄 Actualizar Estado</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE AUDITORÍA -->
+    <div class="content-section">
+        <h3>🔍 Últimos Eventos de Auditoría</h3>
+        
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Fecha/Hora</th>
+                        <th>Usuario</th>
+                        <th>Acción</th>
+                        <th>Descripción</th>
+                        <th>IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if auditoria_logs %}
+                        {% for log in auditoria_logs %}
+                            <tr>
+                                <td>{{ log.fecha_hora }}</td>
+                                <td><strong>{{ log.usuario }}</strong></td>
+                                <td>{{ log.accion }}</td>
+                                <td style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ log.detalles }}</td>
+                                <td>{{ log.ip_address }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
+                                🔍 No hay registros de auditoría disponibles
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE USUARIOS -->
+    <div class="content-section">
+        <h3>👥 Gestión de Usuarios</h3>
+        
+        <button type="button" class="btn btn-primary" style="margin-bottom: var(--spacing-lg);">➕ Agregar Nuevo Usuario</button>
+        
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Último Acceso</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if usuarios %}
+                        {% for u in usuarios %}
+                            <tr>
+                                <td><strong>{{ u.username }}</strong></td>
+                                <td>{{ u.email }}</td>
+                                <td>
+                                    <span class="badge" style="background-color: var(--primary-color); color: var(--bg-darkest);">
+                                        {{ u.rol|capitalize }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if u.activo %}
+                                        <span class="badge" style="background-color: var(--success); color: white;">✅ Activo</span>
+                                    {% else %}
+                                        <span class="badge" style="background-color: var(--danger); color: white;">⛔ Inactivo</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ u.ultimo_acceso }}</td>
+                                <td>
+                                    <a href="/admin/usuario/editar/{{ u.id }}" class="btn btn-secondary btn-small">Editar</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
+                                👥 No hay usuarios registrados
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        function actualizarEstadoSistema() {
+            fetch('/admin/estado')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('conexiones').innerText = data.conexiones_activas || '--';
+                    document.getElementById('espacio-disco').innerText = data.espacio_disco || '--';
+                    showToast('Estado del sistema actualizado', 'success');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Error al actualizar estado', 'danger');
+                });
+        }
+    </script>
+{% endblock %}
                     <div class="log-viewer">
                         {% for log in logs %}
                         <p>[{{ log.fecha }}] {{ log.usuario }} - {{ log.accion }}: {{ log.detalles }}</p>

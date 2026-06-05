@@ -12,7 +12,8 @@ bp = Blueprint('reportes', __name__, url_prefix='/reportes')
 @bp.route('/')
 @login_required()
 def index():
-    return render_template('reportes.html')
+    productos = execute_query("SELECT id, nombre_comercial FROM productos ORDER BY nombre_comercial", fetch_all=True)
+    return render_template('reportes.html', productos=productos, resultados=None)
 
 @bp.route('/consultar', methods=['GET'])
 @login_required()
@@ -40,8 +41,9 @@ def consultar():
     query += " GROUP BY p.id, pl.id ORDER BY unidades DESC"
     
     resultados = execute_query(query, params, fetch_all=True)
+    productos = execute_query("SELECT id, nombre_comercial FROM productos ORDER BY nombre_comercial", fetch_all=True)
     # Renderizar la misma página con los resultados
-    return render_template('reportes.html', resultados=resultados, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin)
+    return render_template('reportes.html', resultados=resultados, fecha_inicio=fecha_inicio, fecha_fin=fecha_fin, productos=productos)
 
 @bp.route('/exportar/csv')
 @login_required()

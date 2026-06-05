@@ -1,83 +1,166 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Distribuidores y Pedidos - PIL Andina</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
-</head>
-<body>
-    <div id="dashboard-layout">
-        <aside id="sidebar">...</aside>
-        <main id="main-content">
-            <h2>🚚 Panel de Distribuidores y Pedidos</h2>
-            <hr>
+{% extends "base.html" %}
 
-            <section class="form-section">
-                <h3>Crear Nueva Orden de Pedido</h3>
-                <form action="/distribuidores/crear" method="POST">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Distribuidor:</label>
-                            <select name="distribuidor_id" required>
-                                {% for d in distribuidores %}
-                                <option value="{{ d.id }}">{{ d.razon_social }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Fecha Entrega Requerida:</label>
-                            <input type="date" name="fecha_entrega" required>
-                        </div>
+{% block title %}Gestión de Distribuidores y Pedidos - PIL Andina{% endblock %}
+
+{% block content %}
+    <div class="breadcrumb">
+        <span>🚚</span>
+        <span><a href="/dashboard">Dashboard</a></span>
+        <span>/</span>
+        <span style="color: var(--text-muted);">Distribuidores & Pedidos</span>
+    </div>
+
+    <h2 style="margin-bottom: var(--spacing-2xl);">🚚 Panel de Distribuidores y Pedidos</h2>
+
+    <!-- SECCIÓN DE CREAR PEDIDO -->
+    <div class="content-section">
+        <h3>➕ Crear Nueva Orden de Pedido</h3>
+        
+        <form action="/distribuidores/crear" method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="distribuidor_id">Distribuidor</label>
+                    <select id="distribuidor_id" name="distribuidor_id" required>
+                        <option value="">-- Seleccione distribuidor --</option>
+                        {% for d in distribuidores %}
+                            <option value="{{ d.id }}">{{ d.razon_social }} ({{ d.ciudad }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fecha_entrega">Fecha de Entrega Requerida</label>
+                    <input type="date" id="fecha_entrega" name="fecha_entrega" required>
+                </div>
+            </div>
+
+            <!-- ITEMS DEL PEDIDO -->
+            <fieldset style="border: 2px dashed rgba(212, 165, 116, 0.3); border-radius: var(--radius-lg); padding: var(--spacing-xl); margin: var(--spacing-xl) 0; background-color: rgba(212, 165, 116, 0.01);">
+                <legend style="padding: 0 var(--spacing-md); color: var(--primary-color); font-weight: 600; font-size: 0.9rem; text-transform: uppercase;">📦 Items del Pedido</legend>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="item_producto">Producto</label>
+                        <select id="item_producto" name="item_producto" required>
+                            <option value="">-- Seleccione producto --</option>
+                            {% for p in productos %}
+                                <option value="{{ p.id }}">{{ p.nombre_comercial }} ({{ p.presentacion }})</option>
+                            {% endfor %}
+                        </select>
                     </div>
-                    <fieldset class="calidad-box">
-                        <legend>Items del Pedido</legend>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Producto:</label>
-                                <select name="item_producto">
-                                    {% for p in productos %}
-                                    <option value="{{ p.id }}">{{ p.nombre_comercial }} {{ p.presentacion }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Cantidad (Unidades):</label>
-                                <input type="number" name="item_cantidad" min="1" required>
-                            </div>
-                        </div>
-                    </fieldset>
-                    <button type="submit" class="btn-primary">Confirmar Pedido</button>
-                </form>
-            </section>
+                    <div class="form-group">
+                        <label for="item_cantidad">Cantidad (Unidades)</label>
+                        <input type="number" id="item_cantidad" name="item_cantidad" min="1" required placeholder="Ej: 500">
+                    </div>
+                </div>
 
-            <section class="table-section">
-                <h3>Seguimiento de Órdenes</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr><th>ID Pedido</th><th>Distribuidor</th><th>Fecha</th><th>Monto Total</th><th>Estado</th><th>Acción</th></tr>
-                    </thead>
-                    <tbody>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="item_precio_unitario">Precio Unitario (Bs)</label>
+                        <input type="number" id="item_precio_unitario" name="item_precio_unitario" step="0.01" placeholder="Precio de venta">
+                    </div>
+                </div>
+            </fieldset>
+
+            <button type="submit" class="btn btn-primary">✅ Confirmar Pedido</button>
+        </form>
+    </div>
+
+    <!-- TABLA DE PEDIDOS -->
+    <div class="content-section">
+        <h3>📋 Seguimiento de Órdenes de Pedido</h3>
+        
+        <div class="filter-bar">
+            <input type="text" placeholder="🔍 Buscar pedido..." id="search-pedidos">
+            <select id="filter-estado">
+                <option value="">Filtrar por estado...</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="Despachado">Despachado</option>
+                <option value="Entregado">Entregado</option>
+                <option value="Cancelado">Cancelado</option>
+            </select>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID Pedido</th>
+                        <th>Distribuidor</th>
+                        <th>Fecha Pedido</th>
+                        <th>Fecha Entrega</th>
+                        <th>Monto Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if pedidos %}
                         {% for p in pedidos %}
+                            <tr {% if p.estado == 'Pendiente' %}class="row-alert"{% endif %}>
+                                <td><strong>#{{ p.id }}</strong></td>
+                                <td>{{ p.distribuidor_nombre }}</td>
+                                <td>{{ p.fecha_pedido }}</td>
+                                <td>{{ p.fecha_entrega }}</td>
+                                <td><strong>{{ p.monto_total }} Bs</strong></td>
+                                <td>
+                                    {% if p.estado == 'Pendiente' %}
+                                        <span class="badge" style="background-color: var(--warning); color: white;">⏳ Pendiente</span>
+                                    {% elif p.estado == 'Despachado' %}
+                                        <span class="badge" style="background-color: var(--info); color: white;">🚚 Despachado</span>
+                                    {% elif p.estado == 'Entregado' %}
+                                        <span class="badge" style="background-color: var(--success); color: white;">✅ Entregado</span>
+                                    {% else %}
+                                        <span class="badge" style="background-color: var(--danger); color: white;">❌ Cancelado</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if p.estado == 'Pendiente' %}
+                                        <form action="/distribuidores/despachar/{{ p.id }}" method="POST" style="display: inline;">
+                                            <button type="submit" class="btn btn-success btn-small">Despachar</button>
+                                        </form>
+                                    {% endif %}
+                                    <a href="/distribuidores/ver/{{ p.id }}" class="btn btn-secondary btn-small">Ver</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
                         <tr>
-                            <td>#{{ p.id }}</td>
-                            <td>{{ p.distribuidor_nombre }}</td>
-                            <td>{{ p.fecha_pedido }}</td>
-                            <td>{{ p.monto_total }} Bs</td>
-                            <td>{{ p.estado }}</td>
-                            <td>
-                                {% if p.estado == 'Pendiente' %}
-                                <form action="/distribuidores/despachar/{{ p.id }}" method="POST">
-                                    <button class="btn-edit">Despachar</button>
-                                </form>
-                                {% endif %}
+                            <td colspan="7" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
+                                🚚 No hay pedidos registrados
                             </td>
                         </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </section>
-        </main>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.getElementById('search-pedidos').addEventListener('keyup', function(e) {
+            const search = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.data-table tbody tr');
+            
+            rows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(search) ? '' : 'none';
+            });
+        });
+
+        document.getElementById('filter-estado').addEventListener('change', function(e) {
+            const filter = e.target.value;
+            const rows = document.querySelectorAll('.data-table tbody tr');
+            
+            rows.forEach(row => {
+                if (filter === '') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = row.innerText.includes(filter) ? '' : 'none';
+                }
+            });
+        });
+    </script>
+{% endblock %}
     </div>
 </body>
 </html>

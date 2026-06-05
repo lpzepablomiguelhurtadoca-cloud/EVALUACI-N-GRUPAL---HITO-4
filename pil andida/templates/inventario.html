@@ -1,88 +1,154 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control de Inventario - PIL Andina</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
-</head>
-<body>
-    <div id="dashboard-layout">
-        <aside id="sidebar">...</aside>
-        <main id="main-content">
-            <h2>🗄️ Control y Ajustes de Inventario en Bodegas</h2>
-            <hr>
+{% extends "base.html" %}
 
-            <section id="alerts-section">
-                {% for alerta in alertas %}
-                <div class="alert-box-danger">
-                    <strong>⚠️ ALERTA:</strong> {{ alerta.mensaje }} ({{ alerta.fecha }})
+{% block title %}Control de Inventario - PIL Andina{% endblock %}
+
+{% block content %}
+    <div class="breadcrumb">
+        <span>🗄️</span>
+        <span><a href="/dashboard">Dashboard</a></span>
+        <span>/</span>
+        <span style="color: var(--text-muted);">Inventario</span>
+    </div>
+
+    <h2 style="margin-bottom: var(--spacing-2xl);">🗄️ Control de Inventario en Bodegas</h2>
+
+    <!-- ALERTAS -->
+    {% if alertas %}
+        {% for alerta in alertas %}
+            <div class="alert alert-danger">
+                <span>⚠️ ALERTA: {{ alerta.mensaje }} ({{ alerta.fecha }})</span>
+                <span class="alert-close" onclick="this.parentElement.remove();">×</span>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- SECCIÓN DE AJUSTES -->
+    <div class="content-section">
+        <h3>🔧 Registrar Ajuste de Inventario</h3>
+        
+        <form action="/inventario/ajuste" method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="lote_ajuste">Lote de Producción</label>
+                    <select id="lote_ajuste" name="lote_ajuste" required>
+                        <option value="">-- Seleccione lote --</option>
+                        {% for l in lotes %}
+                            <option value="{{ l.id }}">{{ l.numero_lote }} ({{ l.nombre_comercial }} - {{ l.planta }})</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                {% endfor %}
-            </section>
+                <div class="form-group">
+                    <label for="tipo_movimiento">Tipo de Ajuste</label>
+                    <select id="tipo_movimiento" name="tipo_movimiento" required>
+                        <option value="">-- Seleccione tipo --</option>
+                        <option value="Merma por Transporte">📦 Merma por Transporte</option>
+                        <option value="Falla de Envasado">⚠️ Falla de Envasado</option>
+                        <option value="Ajuste de Auditoría">✅ Ajuste Manual</option>
+                    </select>
+                </div>
+            </div>
 
-            <section class="form-section">
-                <h3>Registrar Ajuste de Inventario (Merma / Rotura)</h3>
-                <form action="/inventario/ajuste" method="POST">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Lote de Producción:</label>
-                            <select name="lote_ajuste" required>
-                                {% for l in lotes %}
-                                <option value="{{ l.id }}">{{ l.numero_lote }} ({{ l.nombre_comercial }} - {{ l.planta }})</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Tipo de Ajuste:</label>
-                            <select name="tipo_movimiento" required>
-                                <option value="Merma por Transporte">Merma por Transporte</option>
-                                <option value="Falla de Envasado">Falla de Envasado</option>
-                                <option value="Ajuste de Auditoría">Ajuste Manual</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Cantidad a Descontar:</label>
-                            <input type="number" name="cantidad_ajuste" min="1" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Autorizado por:</label>
-                            <input type="text" name="autorizado_por" required>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn-danger">Aplicar Descuento de Stock</button>
-                </form>
-            </section>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cantidad_ajuste">Cantidad a Descontar</label>
+                    <input type="number" id="cantidad_ajuste" name="cantidad_ajuste" min="1" required placeholder="Ej: 50">
+                </div>
+                <div class="form-group">
+                    <label for="autorizado_por">Autorizado por</label>
+                    <input type="text" id="autorizado_por" name="autorizado_por" required placeholder="Nombre del autorizado">
+                </div>
+            </div>
 
-            <section class="table-section">
-                <h3>Estado del Stock en Tiempo Real</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr><th>Planta</th><th>Bodega</th><th>Producto</th><th>Lote</th><th>Stock</th><th>Estado</th></tr>
-                    </thead>
-                    <tbody>
-                        {% for item in stock_data %}
-                        <tr {% if item.cantidad < item.stock_minimo %}style="background-color: rgba(231,111,81,0.2);"{% endif %}>
-                            <td>{{ item.planta }}</td>
+            <div class="form-group">
+                <label for="observaciones">Observaciones (Opcional)</label>
+                <textarea id="observaciones" name="observaciones" placeholder="Detalles adicionales sobre el ajuste"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-danger">⚙️ Aplicar Descuento de Stock</button>
+        </form>
+    </div>
+
+    <!-- TABLA DE STOCK -->
+    <div class="content-section">
+        <h3>📋 Estado del Stock en Tiempo Real</h3>
+        
+        <div class="filter-bar">
+            <input type="text" placeholder="🔍 Buscar producto..." id="search-stock">
+            <select id="filter-estado">
+                <option value="">Filtrar por estado...</option>
+                <option value="critical">Crítico</option>
+                <option value="ok">Óptimo</option>
+            </select>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Planta</th>
+                        <th>Bodega</th>
+                        <th>Producto</th>
+                        <th>Lote</th>
+                        <th>Stock</th>
+                        <th>Mínimo</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in stock_data %}
+                        <tr {% if item.cantidad < item.stock_minimo %}class="row-alert"{% endif %}>
+                            <td><strong>{{ item.planta }}</strong></td>
                             <td>{{ item.nombre_bodega }}</td>
                             <td>{{ item.nombre_comercial }}</td>
                             <td>{{ item.numero_lote }}</td>
                             <td>{{ item.cantidad }} u.</td>
+                            <td>{{ item.stock_minimo }} u.</td>
                             <td>
                                 {% if item.cantidad < item.stock_minimo %}
-                                <span class="status-critical">Crítico</span>
+                                    <span class="badge" style="background-color: var(--danger); color: white;">🔴 Crítico</span>
                                 {% else %}
-                                <span class="status-ok">Óptimo</span>
+                                    <span class="badge" style="background-color: var(--success); color: white;">✅ Óptimo</span>
                                 {% endif %}
                             </td>
                         </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </section>
-        </main>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
+                                📦 No hay registros de stock disponibles
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-</body>
-</html>
+
+    <!-- SCRIPT DE BÚSQUEDA Y FILTRADO -->
+    {% block extra_js %}
+        <script>
+            document.getElementById('search-stock').addEventListener('keyup', function(e) {
+                const search = e.target.value.toLowerCase();
+                const rows = document.querySelectorAll('.data-table tbody tr');
+                rows.forEach(row => {
+                    row.style.display = row.innerText.toLowerCase().includes(search) ? '' : 'none';
+                });
+            });
+
+            document.getElementById('filter-estado').addEventListener('change', function(e) {
+                const filter = e.target.value;
+                const rows = document.querySelectorAll('.data-table tbody tr');
+                rows.forEach(row => {
+                    if (filter === '') {
+                        row.style.display = '';
+                    } else if (filter === 'critical' && row.classList.contains('row-alert')) {
+                        row.style.display = '';
+                    } else if (filter === 'ok' && !row.classList.contains('row-alert')) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

@@ -24,7 +24,7 @@ def dashboard():
     
     # Preparar etiquetas y valores para el gráfico (se pasan al template)
     meses = [d['mes'] for d in datos_rotacion]
-    ventas = [d['salidas'] for d in datos_rotacion]
+    ventas = [float(d['salidas'] or 0) for d in datos_rotacion]  # Convertir a float para evitar errores con Decimal
     
     return render_template('dashboard.html', 
                            metrics=metrics, 

@@ -1,71 +1,116 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reportes Gerenciales - PIL Andina</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
-</head>
-<body>
-    <div id="dashboard-layout">
-        <aside id="sidebar">...</aside>
-        <main id="main-content">
-            <h2>📈 Panel de Reportes Estadísticos</h2>
-            <hr>
+{% extends "base.html" %}
 
-            <section class="form-section">
-                <h3>Filtrar Reporte de Rotación y Ventas</h3>
-                <form action="/reportes/consultar" method="GET">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Fecha Inicial:</label>
-                            <input type="date" name="fecha_inicio" value="{{ fecha_inicio }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Fecha Final:</label>
-                            <input type="date" name="fecha_fin" value="{{ fecha_fin }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Producto:</label>
-                            <select name="filtro_producto">
-                                <option value="todos">-- Todos --</option>
-                                {% for p in productos %}
-                                <option value="{{ p.id }}">{{ p.nombre_comercial }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn-primary">Generar Reporte</button>
-                </form>
-            </section>
+{% block title %}Reportes Gerenciales - PIL Andina{% endblock %}
 
-            <section class="table-section">
-                <h3>Ranking de Productos con Mayor Rotación</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr><th>Producto</th><th>Unidades Despachadas</th><th>Total Recaudado (Bs)</th><th>Planta</th></tr>
-                    </thead>
-                    <tbody>
-                        {% for r in resultados %}
-                        <tr>
-                            <td><strong>{{ r.nombre_comercial }}</strong></td>
-                            <td>{{ r.unidades }} u.</td>
-                            <td>{{ r.total_recaudado }} Bs</td>
-                            <td>{{ r.planta }}</td>
-                        </tr>
-                        {% else %}
-                        <td><td colspan="4">Sin datos en el rango seleccionado.使用</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </section>
-
-            <div class="export-buttons-group">
-                <a href="/reportes/exportar/csv?tipo=stock_planta" class="btn-export">📄 Exportar Stock a CSV</a>
-                <a href="/reportes/exportar/excel?tipo=proximos_vencer" class="btn-export">📊 Exportar Lotes por Vencer (Excel)</a>
-                <a href="/reportes/proximos-vencer/pdf" class="btn-export">🖨️ Generar PDF</a>
-            </div>
-        </main>
+{% block content %}
+    <div class="breadcrumb">
+        <span>📈</span>
+        <span><a href="/dashboard">Dashboard</a></span>
+        <span>/</span>
+        <span style="color: var(--text-muted);">Reportes Gerenciales</span>
     </div>
-</body>
-</html>
+
+    <h2 style="margin-bottom: var(--spacing-2xl);">📈 Reportes Estadísticos</h2>
+
+    <!-- FILTROS DE REPORTE -->
+    <div class="content-section">
+        <h3>🔍 Filtrar Reporte de Rotación y Ventas</h3>
+        
+        <form action="/reportes/consultar" method="GET">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="fecha_inicio">Fecha Inicial</label>
+                    <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ fecha_inicio }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="fecha_fin">Fecha Final</label>
+                    <input type="date" id="fecha_fin" name="fecha_fin" value="{{ fecha_fin }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="filtro_producto">Producto</label>
+                    <select id="filtro_producto" name="filtro_producto">
+                        <option value="todos">-- Todos los productos --</option>
+                        {% for p in productos %}
+                            <option value="{{ p.id }}">{{ p.nombre_comercial }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: var(--spacing-lg);">
+                <button type="submit" class="btn btn-primary">📊 Generar Reporte</button>
+                <button type="button" class="btn btn-secondary" onclick="exportTableToCSV('reporteTable', 'reporte.csv')">📥 Descargar CSV</button>
+                <button type="button" class="btn btn-secondary" onclick="printDocument()">🖨️ Imprimir</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TABLA DE RESULTADOS -->
+    <div class="content-section">
+        <h3>📋 Ranking de Productos con Mayor Rotación</h3>
+        
+        <div class="table-container">
+            <table class="data-table" id="reporteTable">
+                <thead>
+                    <tr>
+                        <th>🍺 Producto</th>
+                        <th>📦 Unidades Despachadas</th>
+                        <th>💰 Total Recaudado (Bs)</th>
+                        <th>🏭 Planta</th>
+                        <th>📊 Margen (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if resultados %}
+                        {% for r in resultados %}
+                            <tr>
+                                <td><strong>{{ r.nombre_comercial }}</strong></td>
+                                <td>{{ r.unidades }} u.</td>
+                                <td><strong>{{ r.total_recaudado }} Bs</strong></td>
+                                <td>{{ r.planta }}</td>
+                                <td>
+                                    <span class="badge" style="background-color: var(--success); color: white;">--%</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: var(--spacing-2xl); color: var(--text-muted);">
+                                📊 No hay datos para el período seleccionado
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- RESUMEN ESTADÍSTICO -->
+    {% if resultados %}
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <h3>💰 Ingresos Totales</h3>
+            <div class="metric-value">{{ ingresos_totales|default(0) }} <small>Bs</small></div>
+            <p class="metric-label">Por período seleccionado</p>
+        </div>
+
+        <div class="metric-card">
+            <h3>📦 Unidades Vendidas</h3>
+            <div class="metric-value">{{ unidades_totales|default(0) }} <small>u.</small></div>
+            <p class="metric-label">Volumen total despachado</p>
+        </div>
+
+        <div class="metric-card">
+            <h3>🍺 Productos Activos</h3>
+            <div class="metric-value">{{ productos_activos|default(0) }}</div>
+            <p class="metric-label">Con movimiento en período</p>
+        </div>
+
+        <div class="metric-card">
+            <h3>📈 Promedio por Producto</h3>
+            <div class="metric-value">{{ promedio_venta|default(0) }} <small>Bs</small></div>
+            <p class="metric-label">Ingresos promedio</p>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

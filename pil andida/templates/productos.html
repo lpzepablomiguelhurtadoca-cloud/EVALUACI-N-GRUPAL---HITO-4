@@ -1,96 +1,191 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Productos - PIL Andina</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
-</head>
-<body>
-    <div id="dashboard-layout">
-        <main id="main-content">
-            <h2>🍺 Catálogo de Productos (Cervecería)</h2>
-            <hr>
+{% extends "base.html" %}
 
-            <section class="form-section">
-                <h3>Registrar Nuevo Producto / Presentación</h3>
-                <form action="/productos/guardar" method="POST">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="codigo_unico">Código Único de Producto:</label>
-                            <input type="text" id="codigo_unico" name="codigo_unico" placeholder="Ej: CER-PAC-620" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="nombre_comercial">Nombre Comercial:</label>
-                            <input type="text" id="nombre_comercial" name="nombre_comercial" placeholder="Ej: Paceña Centenario, Huari, Taquiña" required>
-                        </div>
-                    </div>
+{% block title %}Gestión de Productos - PIL Andina{% endblock %}
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="tipo_cerveza">Tipo de Cerveza:</label>
-                            <select id="tipo_cerveza" name="tipo_cerveza" required>
-                                <option value="Lager">Lager</option>
-                                <option value="Pilsener">Pilsener</option>
-                                <option value="Malta">Malta</option>
-                                <option value="Negra">Negra</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="presentacion">Presentación:</label>
-                            <select id="presentacion" name="presentacion" required>
-                                <option value="355ml">Botella 355ml</option>
-                                <option value="620ml">Botella 620ml</option>
-                                <option value="1L">Botella Retornable 1 Litro</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="graduacion">Graduación Alcohólica (%):</label>
-                            <input type="number" id="graduacion" name="graduacion" step="0.1" placeholder="Ej: 4.8" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="precio">Precio Unitario Actual (Bs):</label>
-                            <input type="number" id="precio" name="precio" step="0.01" placeholder="Ej: 12.50" required>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-success">Añadir al Catálogo</button>
-                </form>
-            </section>
-
-            <section class="table-section">
-                <h3>Productos en Sistema</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Nombre</th>
-                            <th>Tipo</th>
-                            <th>Presentación</th>
-                            <th>Graduación</th>
-                            <th>Precio</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>CER-PAC-620</strong></td>
-                            <td>Paceña Centenario</td>
-                            <td>Pilsener</td>
-                            <td>620ml</td>
-                            <td>4.8%</td>
-                            <td>12.00 Bs</td>
-                            <td>
-                                <a href="/productos/editar/1" class="btn-edit">Editar</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-        </main>
+{% block content %}
+    <div class="breadcrumb">
+        <span>🍺</span>
+        <span><a href="/dashboard">Dashboard</a></span>
+        <span>/</span>
+        <span style="color: var(--text-muted);">Productos</span>
     </div>
-</body>
-</html>
+
+    <h2 style="margin-bottom: var(--spacing-lg);">🍺 Gestión de Productos</h2>
+
+    <!-- SECCIÓN DE FORMULARIO PARA NUEVO PRODUCTO -->
+    <div class="content-section">
+        <h3>➕ Registrar Nuevo Producto / Presentación</h3>
+        
+        <form action="/productos/guardar" method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="codigo_unico">Código Único de Producto</label>
+                    <input 
+                        type="text" 
+                        id="codigo_unico" 
+                        name="codigo_unico" 
+                        placeholder="Ej: CER-PAC-620" 
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="nombre_comercial">Nombre Comercial</label>
+                    <input 
+                        type="text" 
+                        id="nombre_comercial" 
+                        name="nombre_comercial" 
+                        placeholder="Ej: Paceña Centenario, Huari, Taquiña" 
+                        required
+                    >
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tipo_cerveza">Tipo de Cerveza</label>
+                    <select id="tipo_cerveza" name="tipo_cerveza" required>
+                        <option value="">-- Seleccione tipo --</option>
+                        <option value="Lager">🍺 Lager</option>
+                        <option value="Pilsener">🍺 Pilsener</option>
+                        <option value="Malta">🍺 Malta</option>
+                        <option value="Negra">🍺 Negra</option>
+                        <option value="IPA">🍺 IPA</option>
+                        <option value="Stout">🍺 Stout</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="presentacion">Presentación</label>
+                    <select id="presentacion" name="presentacion" required>
+                        <option value="">-- Seleccione presentación --</option>
+                        <option value="355ml">🍾 Botella 355ml</option>
+                        <option value="620ml">🍾 Botella 620ml</option>
+                        <option value="1L">🍾 Botella Retornable 1L</option>
+                        <option value="Barril 50L">🛢️ Barril 50L</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="graduacion">Graduación Alcohólica (%)</label>
+                    <input 
+                        type="number" 
+                        id="graduacion" 
+                        name="graduacion" 
+                        step="0.1" 
+                        placeholder="Ej: 4.8" 
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="precio">Precio Unitario Actual (Bs)</label>
+                    <input 
+                        type="number" 
+                        id="precio" 
+                        name="precio" 
+                        step="0.01" 
+                        placeholder="Ej: 12.50" 
+                        required
+                    >
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="descripcion">Descripción (Opcional)</label>
+                    <textarea 
+                        id="descripcion" 
+                        name="descripcion" 
+                        placeholder="Notas adicionales sobre el producto"
+                    ></textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">✅ Registrar Producto</button>
+        </form>
+    </div>
+
+    <!-- SECCIÓN DE TABLA DE PRODUCTOS -->
+    <div class="content-section">
+        <h3>📋 Catálogo de Productos en Sistema</h3>
+        
+        <div class="filter-bar">
+            <input type="text" placeholder="🔍 Buscar por nombre o código..." id="search-productos">
+            <select id="filter-tipo">
+                <option value="">Filtrar por tipo...</option>
+                <option value="Lager">Lager</option>
+                <option value="Pilsener">Pilsener</option>
+                <option value="Malta">Malta</option>
+                <option value="Negra">Negra</option>
+            </select>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre Comercial</th>
+                        <th>Tipo</th>
+                        <th>Presentación</th>
+                        <th>Graduación</th>
+                        <th>Precio (Bs)</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>CER-PAC-620</strong></td>
+                        <td>Paceña Centenario</td>
+                        <td>Pilsener</td>
+                        <td>620ml</td>
+                        <td>4.8%</td>
+                        <td>12.00 Bs</td>
+                        <td>
+                            <a href="/productos/editar/1" class="btn btn-secondary btn-small">Editar</a>
+                            <a href="/productos/eliminar/1" class="btn btn-danger btn-small" onclick="return confirm('¿Eliminar este producto?');">Eliminar</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>CER-HUA-355</strong></td>
+                        <td>Huari</td>
+                        <td>Lager</td>
+                        <td>355ml</td>
+                        <td>4.2%</td>
+                        <td>8.50 Bs</td>
+                        <td>
+                            <a href="/productos/editar/2" class="btn btn-secondary btn-small">Editar</a>
+                            <a href="/productos/eliminar/2" class="btn btn-danger btn-small" onclick="return confirm('¿Eliminar este producto?');">Eliminar</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        // Búsqueda en tiempo real
+        document.getElementById('search-productos').addEventListener('keyup', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.data-table tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Filtrado por tipo
+        document.getElementById('filter-tipo').addEventListener('change', function(e) {
+            const filterValue = e.target.value;
+            const rows = document.querySelectorAll('.data-table tbody tr');
+            
+            rows.forEach(row => {
+                const tipoCell = row.cells[2].innerText;
+                row.style.display = filterValue === '' || tipoCell === filterValue ? '' : 'none';
+            });
+        });
+    </script>
+{% endblock %}

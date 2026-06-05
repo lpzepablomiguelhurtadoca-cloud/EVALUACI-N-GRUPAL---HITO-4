@@ -26,9 +26,10 @@ def listar():
         params.append(planta)
     query += " ORDER BY l.fecha_produccion DESC"
     lotes = execute_query(query, params, fetch_all=True)
-    # Obtener lista de plantas para el filtro
+    # Obtener lista de plantas y productos para los filtros
     plantas = execute_query("SELECT nombre FROM plantas", fetch_all=True)
-    return render_template('lotes.html', lotes=lotes, plantas=plantas, search=search, planta_filtro=planta)
+    productos = execute_query("SELECT id, nombre_comercial, presentacion FROM productos ORDER BY nombre_comercial", fetch_all=True)
+    return render_template('lotes.html', lotes=lotes, plantas=plantas, productos=productos, search=search, planta_filtro=planta)
 
 @bp.route('/guardar', methods=['POST'])
 @login_required(rol='admin')

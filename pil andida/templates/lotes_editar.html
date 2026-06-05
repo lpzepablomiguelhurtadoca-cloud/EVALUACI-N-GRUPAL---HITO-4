@@ -1,75 +1,95 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Editar Lote - PIL Andina</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/estilos_premium_pil.css') }}">
-</head>
-<body>
-    <div id="dashboard-layout">
-        <main id="main-content">
-            <h2>✏️ Editar Lote</h2>
-            <hr>
-            <section class="form-section">
-                <form action="/lotes/actualizar/{{ lote.id }}" method="POST">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Número de Lote:</label>
-                            <input type="text" name="nro_lote" value="{{ lote.numero_lote }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Producto:</label>
-                            <select name="producto_id">
-                                {% for p in productos %}
-                                <option value="{{ p.id }}" {% if p.id == lote.producto_id %}selected{% endif %}>{{ p.nombre_comercial }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Fecha Producción:</label>
-                            <input type="date" name="fecha_produccion" value="{{ lote.fecha_produccion }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Fecha Vencimiento:</label>
-                            <input type="date" name="fecha_vencimiento" value="{{ lote.fecha_vencimiento }}" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Cantidad:</label>
-                            <input type="number" name="cantidad" value="{{ lote.cantidad_producida }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Planta:</label>
-                            <select name="planta_id">
-                                {% for pl in plantas %}
-                                <option value="{{ pl.id }}" {% if pl.id == lote.planta_id %}selected{% endif %}>{{ pl.nombre }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
+{% extends "base.html" %}
+
+{% block title %}Editar Lote de Producción - PIL Andina{% endblock %}
+
+{% block content %}
+    <div class="breadcrumb">
+        <span>📦</span>
+        <span><a href="/dashboard">Dashboard</a></span>
+        <span>/</span>
+        <span><a href="/lotes">Lotes</a></span>
+        <span>/</span>
+        <span style="color: var(--text-muted);">Editar</span>
+    </div>
+
+    <h2 style="margin-bottom: var(--spacing-2xl);">✏️ Editar Lote de Producción</h2>
+
+    <div class="content-section">
+        <form action="/lotes/actualizar/{{ lote.id }}" method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nro_lote">Número de Lote</label>
+                    <input type="text" id="nro_lote" name="nro_lote" value="{{ lote.numero_lote }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="producto_id">Producto</label>
+                    <select id="producto_id" name="producto_id" required>
+                        {% for p in productos %}
+                            <option value="{{ p.id }}" {% if p.id == lote.producto_id %}selected{% endif %}>
+                                {{ p.nombre_comercial }} ({{ p.presentacion }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="fecha_produccion">Fecha de Producción</label>
+                    <input type="date" id="fecha_produccion" name="fecha_produccion" value="{{ lote.fecha_produccion }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="fecha_vencimiento">Fecha de Vencimiento</label>
+                    <input type="date" id="fecha_vencimiento" name="fecha_vencimiento" value="{{ lote.fecha_vencimiento }}" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cantidad">Cantidad Producida</label>
+                    <input type="number" id="cantidad" name="cantidad" value="{{ lote.cantidad_producida }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="planta_id">Planta de Origen</label>
+                    <select id="planta_id" name="planta_id" required>
+                        {% for pl in plantas %}
+                            <option value="{{ pl.id }}" {% if pl.id == lote.planta_id %}selected{% endif %}>
+                                {{ pl.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- CONTROL DE CALIDAD -->
+            <fieldset style="border: 2px dashed rgba(212, 165, 116, 0.3); border-radius: var(--radius-lg); padding: var(--spacing-xl); margin: var(--spacing-xl) 0; background-color: rgba(212, 165, 116, 0.01);">
+                <legend style="padding: 0 var(--spacing-md); color: var(--primary-color); font-weight: 600; font-size: 0.9rem; text-transform: uppercase;">✅ Control de Calidad</legend>
+                
+                <div class="form-row">
                     <div class="form-group">
-                        <label>Control Calidad:</label>
-                        <select name="calidad_resultado">
-                            <option value="Aprobado" {% if lote.control_calidad == 'Aprobado' %}selected{% endif %}>Aprobado</option>
-                            <option value="Rechazado" {% if lote.control_calidad == 'Rechazado' %}selected{% endif %}>Rechazado</option>
+                        <label for="calidad_resultado">Resultado</label>
+                        <select id="calidad_resultado" name="calidad_resultado" required>
+                            <option value="Aprobado" {% if lote.control_calidad == 'Aprobado' %}selected{% endif %}>✅ Aprobado</option>
+                            <option value="Rechazado" {% if lote.control_calidad == 'Rechazado' %}selected{% endif %}>❌ Rechazado</option>
+                            <option value="Condicional" {% if lote.control_calidad == 'Condicional' %}selected{% endif %}>⚠️ Condicional</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Técnico:</label>
-                        <input type="text" name="tecnico" value="{{ lote.tecnico_responsable }}">
+                        <label for="tecnico">Técnico Responsable</label>
+                        <input type="text" id="tecnico" name="tecnico" value="{{ lote.tecnico_responsable }}">
                     </div>
-                    <div class="form-group">
-                        <label>Observaciones:</label>
-                        <textarea name="observaciones">{{ lote.observaciones }}</textarea>
-                    </div>
-                    <button type="submit" class="btn-success">Actualizar</button>
-                    <a href="/lotes" class="btn-edit">Cancelar</a>
-                </form>
-            </section>
-        </main>
+                </div>
+
+                <div class="form-group">
+                    <label for="observaciones">Observaciones</label>
+                    <textarea id="observaciones" name="observaciones">{{ lote.observaciones }}</textarea>
+                </div>
+            </fieldset>
+
+            <div class="form-row">
+                <button type="submit" class="btn btn-primary">💾 Actualizar Lote</button>
+                <a href="/lotes" class="btn btn-secondary">❌ Cancelar</a>
+            </div>
+        </form>
     </div>
-</body>
-</html>
+{% endblock %}
